@@ -40,22 +40,17 @@ public class AppUserService implements UserDetailsService {
     }
 
     //first check if request user is already exist.
-    public ExistingUser signUpUser(AppUser appUser) {
+    public String signUpUser(AppUser appUser) {
         String token;
         boolean isUserExist = appUserRepository.findByEmail(appUser.getEmail())
                 .isPresent();
 
         logger.info(String.valueOf(isUserExist));
 
-        //드디어 됫다리...
-        //우선 db store된거 찾고
-        //아 몰랑 됬음. 
         if (isUserExist) {
             Optional<AppUser> temp = appUserRepository.findByEmail(appUser.getEmail());
             AppUser exist = temp.get();
             token = createToken(exist);
-            return new ExistingUser(true, token);
-
         } else {
             logger.info("hi");
             //encode password and set the encoded pw.
@@ -67,9 +62,8 @@ public class AppUserService implements UserDetailsService {
 
             //create token.
             token = createToken(appUser);
-
-            return new ExistingUser(false, token);
         }
+        return token;
     }
 
     public String createToken(AppUser appUser) {
@@ -88,25 +82,6 @@ public class AppUserService implements UserDetailsService {
     public void enableAppUser(String email) {
         appUserRepository.enableAppUser(email);
     }
-
-    public static class ExistingUser {
-        boolean isExisted = false;
-        String token;
-
-        public ExistingUser(boolean isExisted, String token) {
-            this.isExisted = isExisted;
-            this.token = token;
-        }
-
-        public boolean isExisted() {
-            return isExisted;
-        }
-
-        public String getToken() {
-            return token;
-        }
-    }
-
 
 }
 

@@ -15,9 +15,14 @@ public class RegistrationController {
         return registrationService.register(request);
     }
 
-
     //@RequestParam은 "api/v1/expense-tracker/registration/confirm?token=!~~~~~~~"
     //저렇게 confirm뒤에 ? 붙히고 token값을 넣어주는것.
+
+    @GetMapping
+    public String p1() {
+        return "in registration";
+    }
+
     @GetMapping(path = "confirm")
     public String confirm(@RequestParam("token") String token) {
         return registrationService.confirmToken(token);

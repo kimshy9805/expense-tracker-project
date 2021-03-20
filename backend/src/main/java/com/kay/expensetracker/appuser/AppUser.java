@@ -1,6 +1,7 @@
 package com.kay.expensetracker.appuser;
 
 
+import com.kay.expensetracker.detail.expense.Expense;
 import com.kay.expensetracker.registration.token.ConfirmationToken;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -29,7 +30,7 @@ public class AppUser implements UserDetails {
     @Column(
             name = "app_user_id"
     )
-    private long id;
+    private Long id;
     private String firstName;
     private String lastName;
     private String email;
@@ -48,11 +49,13 @@ public class AppUser implements UserDetails {
     )
     private List<ConfirmationToken> confirmationTokens = new ArrayList<>();
 
-
-
-
-
-
+    //can be hashmap? key: date / value: rest
+    @OneToMany(
+            mappedBy = "appUser",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<Expense> expense = new ArrayList<>();
 
     public AppUser(String firstName, String lastName, String email, String password, AppUserRole appUserRole) {
         this.firstName = firstName;

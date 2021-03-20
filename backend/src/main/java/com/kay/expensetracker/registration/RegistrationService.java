@@ -3,7 +3,6 @@ package com.kay.expensetracker.registration;
 import com.kay.expensetracker.appuser.AppUser;
 import com.kay.expensetracker.appuser.AppUserRole;
 import com.kay.expensetracker.appuser.AppUserService;
-import com.kay.expensetracker.appuser.AppUserService.ExistingUser;
 import com.kay.expensetracker.email.EmailSender;
 import com.kay.expensetracker.registration.token.ConfirmationToken;
 import com.kay.expensetracker.registration.token.ConfirmationTokenService;
@@ -12,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+
+import static com.kay.expensetracker.appuser.AppUserRole.*;
 
 @Service
 public class RegistrationService {
@@ -26,27 +27,26 @@ public class RegistrationService {
     private EmailSender emailSender;
 
     public String register(RegistrationRequest request) {
+        //todo validator implementation
         boolean isValidEmail = emailValidator.test(request.getEmail());
         if (!isValidEmail) {
             throw new IllegalStateException("email not valid");
         }
-        //use AppUserSerivce to signUp
-        //this singUpUser method will return token allocated to that specific user.
-        //return token을 보고
-        ExistingUser existingUser = appUserService.signUpUser(
+
+        String token = appUserService.signUpUser(
                 new AppUser(
                         request.getFirstName(),
                         request.getLastName(),
                         request.getEmail(),
                         request.getPassword(),
-                        AppUserRole.USER
+                        USER
                 )
         );
 
         //이 link를 email로 보내고 이 링크가 밑에 confirmToken method를 실행시켜서 enable 시키는거임.
-        String link = "http://localhost:8080/api/v1/expense-tracker/registration/confirm?token=" + existingUser.getToken();
+        String link = "http://localhost:8080/api/v1/expense-tracker/registration/confirm?token=" + token;
         emailSender.send(request.getEmail(), buildEmail(request.getFirstName(), link));
-        return existingUser.getToken();
+        return token;
     }
 
     //all or nothing
