@@ -40,7 +40,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/", "index", "/css/*", "/js/*").permitAll()
                 .antMatchers("/api/v*/expense-tracker/registration/**").permitAll()
-                .antMatchers("/api/v*/expense-tracker/expenses/**").permitAll()
+//                .antMatchers("/api/v*/expense-tracker/expenses/**").permitAll()
                 //todo Role based authentication 해야하는데 왠지 계속 forbidden뜸 찾아야함.
 //                    .antMatchers("/api/v*/expense-tracker/expenses/**").hasRole(USER.name())
                 .anyRequest()

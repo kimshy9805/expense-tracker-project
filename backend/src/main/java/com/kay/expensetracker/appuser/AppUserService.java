@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -40,6 +41,7 @@ public class AppUserService implements UserDetailsService {
     }
 
     //first check if request user is already exist.
+    @Transactional
     public String signUpUser(AppUser appUser) {
         String token;
         boolean isUserExist = appUserRepository.findByEmail(appUser.getEmail())

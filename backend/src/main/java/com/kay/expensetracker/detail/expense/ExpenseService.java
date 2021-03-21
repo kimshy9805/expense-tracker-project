@@ -4,6 +4,7 @@ package com.kay.expensetracker.detail.expense;
 import com.kay.expensetracker.appuser.AppUser;
 import com.kay.expensetracker.appuser.AppUserRepository;
 import com.kay.expensetracker.appuser.AppUserRole;
+import com.kay.expensetracker.registration.token.ConfirmationTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,11 +18,13 @@ public class ExpenseService {
     private ExpenseRepository expenseRepository;
     @Autowired
     private AppUserRepository appUserRepository;
+    @Autowired
+    private ConfirmationTokenRepository confirmationTokenRepository;
 
     /*
         post service
     */
-    public void insertExpense(ExpenseRequest request) {
+    public void insertExpense(AppUser appUser, ExpenseRequest request) {
         Expense newRequest = new Expense(
                 request.getMerchant(),
                 request.getDate(),
@@ -29,9 +32,10 @@ public class ExpenseService {
                 request.getExchangeType(),
                 ExpenseCategory.FEES,
                 request.getDescription(),
-                //todo upon insert, there should be a way to identify the user info
-                appUserRepository.findByEmail("kimshy9805@gmail.com").get()
+//                confirmationTokenRepository.getAllTokens(appUser.getId())
+                appUserRepository.findByEmail(appUser.getEmail()).get()
         );
+
         expenseRepository.save(newRequest);
     }
 

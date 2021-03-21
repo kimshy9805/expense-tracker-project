@@ -3,13 +3,11 @@ package com.kay.expensetracker.appuser;
 
 import com.kay.expensetracker.detail.expense.Expense;
 import com.kay.expensetracker.registration.token.ConfirmationToken;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -23,6 +21,7 @@ import java.util.List;
 @Setter
 @EqualsAndHashCode
 @NoArgsConstructor
+@ToString
 public class AppUser implements UserDetails {
 
     @Id
