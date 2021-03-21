@@ -1,6 +1,7 @@
-package com.kay.expensetracker.detail.expense;
+package com.kay.expensetracker.expense;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kay.expensetracker.appuser.AppUser;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -9,17 +10,14 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
 @Table
-@Getter
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode
 public class Expense {
 
-    //todo delete 하니깐 id가 1부터 안생김. 확인
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(
@@ -55,5 +53,35 @@ public class Expense {
         this.category = category;
         this.description = description;
         this.appUser = appUser;
+    }
+
+    //prevent infinite recursion
+    @JsonIgnore
+    public AppUser getAppUser() {
+        return appUser;
+    }
+
+    public String getMerchant() {
+        return merchant;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public Long getAmount() {
+        return amount;
+    }
+
+    public String getExchangeType() {
+        return exchangeType;
+    }
+
+    public ExpenseCategory getCategory() {
+        return category;
+    }
+
+    public String getDescription() {
+        return description;
     }
 }

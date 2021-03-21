@@ -1,4 +1,4 @@
-package com.kay.expensetracker.detail.expense;
+package com.kay.expensetracker.expense;
 
 
 import lombok.*;

@@ -1,13 +1,12 @@
 package com.kay.expensetracker.appuser;
 
 
-import com.kay.expensetracker.detail.expense.Expense;
+import com.kay.expensetracker.expense.Expense;
 import com.kay.expensetracker.registration.token.ConfirmationToken;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.util.ArrayList;
