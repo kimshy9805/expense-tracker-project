@@ -23,14 +23,12 @@ public class ExpenseController {
 
     @GetMapping(path = "/getAll")
     public List<Expense> getAllExpenses(@AuthenticationPrincipal AppUser appUser) {
-        System.out.println(appUser.getId());
         return expenseService.getAllExpense(appUser);
     }
 
-    //@RequestParam? 이용해서도 가능.
     @GetMapping(path = "{id}")
-    public Expense getById(Long id) {
-        return expenseService.getExpenseById(id);
+    public Expense getByExpenseId(@PathVariable int id, @AuthenticationPrincipal AppUser appUser) {
+        return expenseService.getByExpenseId(id, appUser);
     }
 
     @PostMapping
@@ -40,32 +38,18 @@ public class ExpenseController {
     }
 
     @DeleteMapping(path = "/{id}")
-    public String deleteExpense(@PathVariable Long id) {
-        expenseService.deleteExpense(id);
+    public String deleteExpense(@AuthenticationPrincipal AppUser appUser, @PathVariable Long id) {
+        expenseService.deleteExpenseById(appUser, id);
         return "success";
     }
 
     @PutMapping(path = "/{id}")
-    public String updateExpense(@PathVariable Long id, @RequestBody Expense request) {
-        expenseService.updateExpense(id, request);
+    public String updateExpense(@AuthenticationPrincipal AppUser appUser, @PathVariable Long id, @RequestBody ExpenseRequest request) {
+        expenseService.updateExpenseById(appUser, id, request);
         return "success";
     }
 
 
-
-
-
-
-
-    //get
-
-
-    //update
-
-
-
-
-    //delete
 
 }
 

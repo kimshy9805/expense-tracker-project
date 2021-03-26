@@ -19,19 +19,23 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
             value = "SELECT * FROM expense e WHERE e.app_user_id = ?1",
             nativeQuery = true
     )
-    List<Expense> getAllExpenses(Long id);
+    List<Expense> getAllExpenses(@Param("app_user_id")Long id);
 
+
+    //todo exception handle 해줘야함.
     @Query(
-            value = "SELECT * FROM expense e WHERE e.expense_id = ?1",
+            value = "SELECT * FROM expense e WHERE e.app_user_id = :app_user_id and e.expense_id = :expense_id",
             nativeQuery = true
     )
-    Expense getExpenseById(@Param("expense_id") TypedParameterValue id);
+    Expense getByExpenseId(@Param("expense_id") int expenseId, @Param("app_user_id") int appId);
 
+    @Transactional
+    @Modifying
     @Query(
-            value = "DELETE * FROM expense e WHERE e.expense_id = ?1",
+            value = "DELETE FROM expense e WHERE e.app_user_id = :app_user_id and e.expense_id = :expense_id",
             nativeQuery = true
     )
-    void deleteExpense(Long id);
+    void deleteExpenseById(@Param("expense_id")int expenseId, @Param("app_user_id") int appId);
 
     //could be done through expenseRepository.save()
     @Transactional
@@ -47,5 +51,5 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
                     "WHERE e.expense_id = 1?",
             nativeQuery = true
     )
-    void updateExpense(Long id, Expense expense);
+    void updateExpenseById(Long id, Expense expense);
 }

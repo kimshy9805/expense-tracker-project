@@ -4,15 +4,11 @@ package com.kay.expensetracker.expense;
 import com.kay.expensetracker.appuser.AppUser;
 import com.kay.expensetracker.appuser.AppUserRepository;
 import com.kay.expensetracker.registration.token.ConfirmationTokenRepository;
-import com.sun.xml.bind.v2.TODO;
-import org.hibernate.jpa.TypedParameterValue;
-import org.hibernate.type.PostgresUUIDType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.math.BigInteger;
 import java.util.List;
-import java.util.UUID;
+import java.lang.reflect.*;
 
 
 @Service
@@ -24,6 +20,7 @@ public class ExpenseService {
     private AppUserRepository appUserRepository;
     @Autowired
     private ConfirmationTokenRepository confirmationTokenRepository;
+    private Expense toBeUpdatedExpense;
 
     public void insertExpense(AppUser appUser, ExpenseRequest request) {
         //todo if duplicate then throw exception
@@ -44,25 +41,50 @@ public class ExpenseService {
         return expenseRepository.getAllExpenses(appUser.getId());
     }
 
-    //TODO 여기서 부터 하면됨. id가 bytea -> bigint cast 불가능.
-    public Expense getExpenseById(Long id) {
-        TypedParameterValue userIdParam = new TypedParameterValue(new PostgresUUIDType(), id);
-//        userRepository.findByNameAndId(userName, userIdParam);
-
-        return expenseRepository.getExpenseById(userIdParam);
+    public Expense getByExpenseId(int id, AppUser appUser) {
+        System.out.println(appUser.getId());
+        return expenseRepository.getByExpenseId(id, Math.toIntExact(appUser.getId()));
     }
 
-    public void deleteExpense(Long id) {
+    public void deleteExpenseById(AppUser appUser, Long id) {
         boolean exists = expenseRepository.existsById(id);
-        if (exists) {
+        if (!exists) {
             throw new IllegalStateException("id does not exist");
         }
-        expenseRepository.deleteById(id);
+        expenseRepository.deleteExpenseById(Math.toIntExact(id), Math.toIntExact(appUser.getId()));
     }
 
-    public void updateExpense(Long id, Expense request) {
-        expenseRepository.updateExpense(id, request);
+    public void updateExpenseById(AppUser appUser, Long id, ExpenseRequest request) {
+        //todo update. iterate? reflection 사용? update가 주 목적. attribute하나씩 확인해야함. 
+        Expense toBeUpdatedExpense = expenseRepository.findById(id).get();
+
+        updateAttributes(toBeUpdatedExpense);
+
+
+
+
+
+
+
+//        expenseRepository.updateExpenseById(id, request);
         //        expenseRepository.save(request);
     }
+
+    private void updateAttributes(Expense toBeUpdatedExpense) {
+        Field[] fields = toBeUpdatedExpense.getClass().getDeclaredFields();
+        for (Field field: fields) {
+            System.out.println(field.getName());
+
+        }
+
+        //use stream try
+
+
+
+    }
+
+
+
+
 
 }
