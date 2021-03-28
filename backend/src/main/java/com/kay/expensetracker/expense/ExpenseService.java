@@ -4,15 +4,22 @@ package com.kay.expensetracker.expense;
 import com.kay.expensetracker.appuser.AppUser;
 import com.kay.expensetracker.appuser.AppUserRepository;
 import com.kay.expensetracker.registration.token.ConfirmationTokenRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.convert.ReadingConverter;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.Converter;
+import java.lang.annotation.Annotation;
+import java.time.LocalDate;
 import java.util.List;
 import java.lang.reflect.*;
 
 
 @Service
 public class ExpenseService {
+    Logger logger = LoggerFactory.getLogger(ExpenseService.class);
 
     @Autowired
     private ExpenseRepository expenseRepository;
@@ -54,37 +61,68 @@ public class ExpenseService {
         expenseRepository.deleteExpenseById(Math.toIntExact(id), Math.toIntExact(appUser.getId()));
     }
 
+    //save method can override different user's data.
+    //expenseRepository.save(toBeUpdatedExpense);
     public void updateExpenseById(AppUser appUser, Long id, ExpenseRequest request) {
-        //todo update. iterate? reflection 사용? update가 주 목적. attribute하나씩 확인해야함. 
         Expense toBeUpdatedExpense = expenseRepository.findById(id).get();
+        updateAttributes(toBeUpdatedExpense, request);
+//        logger.info("category type" + toBeUpdatedExpense.getCategory());
+        logger.info("enum" + ExpenseCategory.valueOf("fees"));
 
-        updateAttributes(toBeUpdatedExpense);
+//        expenseRepository.updateExpenseById(Math.toIntExact(id),
+//                Math.toIntExact(appUser.getId()),
+//                toBeUpdatedExpense.getAmount(),
+//                LocalDate.parse("2021-04-01"),
+//                toBeUpdatedExpense.getExchangeType(),
+//                toBeUpdatedExpense.getMerchant(),
+//                toBeUpdatedExpense.getCategory(),
+//                toBeUpdatedExpense.getDescription()
+//        );
 
-
-
-
-
-
-
-//        expenseRepository.updateExpenseById(id, request);
-        //        expenseRepository.save(request);
+        //date xx
+//        expenseRepository.updateExpenseById(Math.toIntExact(id),
+//                Math.toIntExact(appUser.getId()),
+//                toBeUpdatedExpense.getMerchant(),
+//                toBeUpdatedExpense.getDate(),
+//                toBeUpdatedExpense.getAmount(),
+//                toBeUpdatedExpense.getExchangeType(),
+//                toBeUpdatedExpense.getDescription()
+//        );
     }
 
-    private void updateAttributes(Expense toBeUpdatedExpense) {
-        Field[] fields = toBeUpdatedExpense.getClass().getDeclaredFields();
-        for (Field field: fields) {
-            System.out.println(field.getName());
-
+    private void updateAttributes(Expense toBeUpdatedExpense, ExpenseRequest request) {
+        Field[] fields = request.getClass().getDeclaredFields();
+        for (Field field : fields) {
+            logger.info("updateAttributes: " + field.getName());
+            switch (field.getName()) {
+                case "merchant":
+                    toBeUpdatedExpense.setMerchant(request.getMerchant());
+                    break;
+                case "date":
+                    toBeUpdatedExpense.setDate(request.getDate());
+                    break;
+                case "amount":
+                    toBeUpdatedExpense.setAmount(request.getAmount());
+                    break;
+                case "exchangeType":
+                    toBeUpdatedExpense.setExchangeType(request.getExchangeType());
+                    break;
+                case "description":
+                    toBeUpdatedExpense.setDescription(request.getDescription());
+                    break;
+                default:
+                    break;
+            }
         }
-
-        //use stream try
-
-
-
     }
-
-
-
+//
+//    @ReadingConverter
+//    private static class CategoryConverter implements Converter<String, ExpenseCategory> {
+//        @Override
+//        private ExpenseCategory convert(final String source) {
+//            return ExpenseCategory.fromString(source);
+//        }
+//    }
 
 
 }
