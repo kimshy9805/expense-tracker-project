@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.Converter;
 import java.lang.annotation.Annotation;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 import java.lang.reflect.*;
 
@@ -61,27 +62,24 @@ public class ExpenseService {
         expenseRepository.deleteExpenseById(Math.toIntExact(id), Math.toIntExact(appUser.getId()));
     }
 
-    //save method can override different user's data.
-    //expenseRepository.save(toBeUpdatedExpense);
     public void updateExpenseById(AppUser appUser, Long id, ExpenseRequest request) {
         Expense toBeUpdatedExpense = expenseRepository.findById(id).get();
 
-//        logger.info("aa" + ExpenseCategory.valueOf(String.valueOf(request.getCategory())));
-        logger.info("bb" + ExpenseCategory.valueOf("FEES"));
+        logger.info("pl" + request.getCategory());
 
-//        updateAttributes(toBeUpdatedExpense, request);
+        updateAttributes(toBeUpdatedExpense, request);
 
-        logger.info("enum" + toBeUpdatedExpense.getCategory().getText());
-//
-//        expenseRepository.updateExpenseById(Math.toIntExact(id),
-//                Math.toIntExact(appUser.getId()),
-//                toBeUpdatedExpense.getAmount(),
-//                LocalDate.parse("2021-04-01"),
-//                toBeUpdatedExpense.getExchangeType(),
-//                toBeUpdatedExpense.getMerchant(),
-//                toBeUpdatedExpense.getCategory().toString(),
-//                toBeUpdatedExpense.getDescription()
-//        );
+        logger.info("enum" + toBeUpdatedExpense.getCategory());
+
+        expenseRepository.updateExpenseById(Math.toIntExact(id),
+                Math.toIntExact(appUser.getId()),
+                toBeUpdatedExpense.getAmount(),
+                LocalDate.parse("2021-04-01"),
+                toBeUpdatedExpense.getExchangeType(),
+                toBeUpdatedExpense.getMerchant(),
+                toBeUpdatedExpense.getCategory().toString(),
+                toBeUpdatedExpense.getDescription()
+        );
     }
 
     private void updateAttributes(Expense toBeUpdatedExpense, ExpenseRequest request) {
@@ -112,14 +110,4 @@ public class ExpenseService {
             }
         }
     }
-//
-//    @ReadingConverter
-//    private static class CategoryConverter implements Converter<String, ExpenseCategory> {
-//        @Override
-//        private ExpenseCategory convert(final String source) {
-//            return ExpenseCategory.fromString(source);
-//        }
-//    }
-
-
 }

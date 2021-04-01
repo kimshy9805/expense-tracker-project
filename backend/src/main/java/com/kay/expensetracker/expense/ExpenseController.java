@@ -31,6 +31,13 @@ public class ExpenseController {
         return expenseService.getByExpenseId(id, appUser);
     }
 
+    //TODO sort된 값들을 구현할꺼임 우선 쉬운거부터 고고 merchant and category
+    @GetMapping(path = "/filter/{id}")
+    public List<Expense> getSortedExpense(@AuthenticationPrincipal AppUser appUser, @PathVariable int id) {
+        return ;
+    }
+    
+
     @PostMapping
     public String insertExpense(@AuthenticationPrincipal AppUser appUser, @RequestBody ExpenseRequest request) {
         expenseService.insertExpense(appUser, request);

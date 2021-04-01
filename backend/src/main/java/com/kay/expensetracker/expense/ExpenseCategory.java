@@ -20,9 +20,13 @@ public enum ExpenseCategory {
     TRAVEL("travel"),
     UTILITIES("utilities");
 
-    private final String text;
+    private String text;
 
     ExpenseCategory(final String text) {
+        this.text = text;
+    }
+
+    public void setText(String text) {
         this.text = text;
     }
 
@@ -30,9 +34,5 @@ public enum ExpenseCategory {
         return text;
     }
 
-    @Override
-    public String toString() {
-        return text;
-    }
 
 }
