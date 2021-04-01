@@ -22,7 +22,6 @@ import java.util.List;
 @NoArgsConstructor
 @ToString
 public class AppUser implements UserDetails {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(

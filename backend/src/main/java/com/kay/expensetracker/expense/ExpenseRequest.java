@@ -14,6 +14,6 @@ public class ExpenseRequest {
     private final LocalDate date;
     private final Long amount;
     private final String exchangeType;
-//    private final ExpenseCategory category;
+    private final ExpenseCategory category;
     private final String description;
 }

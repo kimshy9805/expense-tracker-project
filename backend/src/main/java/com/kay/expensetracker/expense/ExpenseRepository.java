@@ -40,10 +40,6 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
     )
     void deleteExpenseById(@Param("expense_id") int expenseId, @Param("app_user_id") int appId);
 
-    //could be done through expenseRepository.save()
-    //SET => choose specific col to be changed. If not specific, then retain original state.
-    //this wont work as the way of accessing object attribute with dot operator not acceptable.
-    //Instead, use save()
     @Transactional
     @Modifying
     @Query(
@@ -62,30 +58,9 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
                            @Param("date") LocalDate date,
                            @Param("exchangeType") String exchangeType,
                            @Param("merchant") String merchant,
-                           @Param("category") ExpenseCategory category,
+                           @Param("category") String category,
                            @Param("description") String description
     );
-//    @Transactional
-//    @Modifying
-//    @Query(
-//            value = "UPDATE expense e " +
-//                    "SET e.amount = :amount " +
-////                    "e.category = :category, " +
-////                    "e.date = :date, " +
-////                    "e.description = :description, " +
-////                    "e.exchange_type = :exchangeType, " +
-////                    "e.merchant = :merchant " +
-//                    "WHERE e.expense_id = :expense_id AND e.app_user_id = :app_user_id",
-//            nativeQuery = true
-//    )
-//    void updateExpenseById(@Param("expense_id") int expenseId, @Param("app_user_id") int appId,
-//                           @Param("merchant") String merchant,
-//                           @Param("date") LocalDate date,
-//                           @Param("amount") Long amount,
-//                           @Param("exchangeType") String exchangeType,
-//                           @Param("category") ExpenseCategory category,
-//                           @Param("description") String description
-//    );
 }
 
 //fine query

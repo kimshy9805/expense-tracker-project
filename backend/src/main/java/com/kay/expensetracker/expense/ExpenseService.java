@@ -36,7 +36,7 @@ public class ExpenseService {
                 request.getDate(),
                 request.getAmount(),
                 request.getExchangeType(),
-                ExpenseCategory.FEES,
+                request.getCategory(),
                 request.getDescription(),
                 appUserRepository.findByEmail(appUser.getEmail()).get()
         );
@@ -65,27 +65,21 @@ public class ExpenseService {
     //expenseRepository.save(toBeUpdatedExpense);
     public void updateExpenseById(AppUser appUser, Long id, ExpenseRequest request) {
         Expense toBeUpdatedExpense = expenseRepository.findById(id).get();
-        updateAttributes(toBeUpdatedExpense, request);
-//        logger.info("category type" + toBeUpdatedExpense.getCategory());
-        logger.info("enum" + ExpenseCategory.valueOf("fees"));
 
+//        logger.info("aa" + ExpenseCategory.valueOf(String.valueOf(request.getCategory())));
+        logger.info("bb" + ExpenseCategory.valueOf("FEES"));
+
+//        updateAttributes(toBeUpdatedExpense, request);
+
+        logger.info("enum" + toBeUpdatedExpense.getCategory().getText());
+//
 //        expenseRepository.updateExpenseById(Math.toIntExact(id),
 //                Math.toIntExact(appUser.getId()),
 //                toBeUpdatedExpense.getAmount(),
 //                LocalDate.parse("2021-04-01"),
 //                toBeUpdatedExpense.getExchangeType(),
 //                toBeUpdatedExpense.getMerchant(),
-//                toBeUpdatedExpense.getCategory(),
-//                toBeUpdatedExpense.getDescription()
-//        );
-
-        //date xx
-//        expenseRepository.updateExpenseById(Math.toIntExact(id),
-//                Math.toIntExact(appUser.getId()),
-//                toBeUpdatedExpense.getMerchant(),
-//                toBeUpdatedExpense.getDate(),
-//                toBeUpdatedExpense.getAmount(),
-//                toBeUpdatedExpense.getExchangeType(),
+//                toBeUpdatedExpense.getCategory().toString(),
 //                toBeUpdatedExpense.getDescription()
 //        );
     }
@@ -109,6 +103,9 @@ public class ExpenseService {
                     break;
                 case "description":
                     toBeUpdatedExpense.setDescription(request.getDescription());
+                    break;
+                case "category":
+                    toBeUpdatedExpense.setCategory(request.getCategory());
                     break;
                 default:
                     break;

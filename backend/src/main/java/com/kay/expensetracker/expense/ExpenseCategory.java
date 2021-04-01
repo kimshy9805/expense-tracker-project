@@ -26,6 +26,10 @@ public enum ExpenseCategory {
         this.text = text;
     }
 
+    public String getText() {
+        return text;
+    }
+
     @Override
     public String toString() {
         return text;
