@@ -2,10 +2,12 @@ package com.kay.expensetracker.expense;
 
 
 import com.kay.expensetracker.appuser.AppUser;
+import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -14,6 +16,10 @@ public class ExpenseController {
 
     @Autowired
     private ExpenseService expenseService;
+
+    /*
+        HTTP GET Method
+     */
 
     @GetMapping
     public String currentPage(@AuthenticationPrincipal AppUser appUser) {
@@ -31,12 +37,14 @@ public class ExpenseController {
         return expenseService.getByExpenseId(id, appUser);
     }
 
-    //TODO sort된 값들을 구현할꺼임 우선 쉬운거부터 고고 merchant and category
-    @GetMapping(path = "/filter/{id}")
-    public List<Expense> getSortedExpense(@AuthenticationPrincipal AppUser appUser, @PathVariable int id) {
-        return ;
+    @GetMapping(path = "/filter")
+    public List<Expense> getSortedExpense(@AuthenticationPrincipal AppUser appUser, @RequestBody ExpenseSortRequest request) {
+        return expenseService.getSortedExpense(appUser, request);
     }
-    
+
+    /*
+        HTTP POST Method
+     */
 
     @PostMapping
     public String insertExpense(@AuthenticationPrincipal AppUser appUser, @RequestBody ExpenseRequest request) {
@@ -44,11 +52,19 @@ public class ExpenseController {
         return "success";
     }
 
+    /*
+        HTTP DELETE Method
+     */
+
     @DeleteMapping(path = "/{id}")
     public String deleteExpense(@AuthenticationPrincipal AppUser appUser, @PathVariable Long id) {
         expenseService.deleteExpenseById(appUser, id);
         return "success";
     }
+
+    /*
+        HTTP PUT Method
+     */
 
     @PutMapping(path = "/{id}")
     public String updateExpense(@AuthenticationPrincipal AppUser appUser, @PathVariable Long id, @RequestBody ExpenseRequest request) {

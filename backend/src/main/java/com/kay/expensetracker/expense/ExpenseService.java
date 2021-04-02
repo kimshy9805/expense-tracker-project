@@ -14,8 +14,10 @@ import javax.persistence.Converter;
 import java.lang.annotation.Annotation;
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.lang.reflect.*;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -65,8 +67,6 @@ public class ExpenseService {
     public void updateExpenseById(AppUser appUser, Long id, ExpenseRequest request) {
         Expense toBeUpdatedExpense = expenseRepository.findById(id).get();
 
-        logger.info("pl" + request.getCategory());
-
         updateAttributes(toBeUpdatedExpense, request);
 
         logger.info("enum" + toBeUpdatedExpense.getCategory());
@@ -74,7 +74,7 @@ public class ExpenseService {
         expenseRepository.updateExpenseById(Math.toIntExact(id),
                 Math.toIntExact(appUser.getId()),
                 toBeUpdatedExpense.getAmount(),
-                LocalDate.parse("2021-04-01"),
+                toBeUpdatedExpense.getDate(),
                 toBeUpdatedExpense.getExchangeType(),
                 toBeUpdatedExpense.getMerchant(),
                 toBeUpdatedExpense.getCategory().toString(),
@@ -110,4 +110,32 @@ public class ExpenseService {
             }
         }
     }
+
+    /*
+        sort operation
+     */
+    public List<Expense> getSortedExpense(AppUser appUser, ExpenseSortRequest request) {
+        List<Expense> expenseList = expenseRepository.getAllExpenses(appUser.getId());
+        return sortByType(expenseList, request);
+    }
+
+    private List<Expense> sortByType(List<Expense> expenseList, ExpenseSortRequest request) {
+        switch (request.getType()) {
+            case ("category"):
+                expenseList.sort(Comparator.comparing(Expense::getCategory));
+                break;
+            case("merchant"):
+                expenseList.sort(Comparator.comparing(Expense::getMerchant));
+                break;
+            case("date"):
+                return expenseList.stream()
+                        .filter(e -> !e.getDate().isAfter(request.getTo()) && !e.getDate().isBefore(request.getFrom()))
+                        .sorted(Comparator.comparing(Expense::getDate))
+                        .collect(Collectors.toList());
+            default:
+                break;
+        }
+        return expenseList;
+    }
+
 }
