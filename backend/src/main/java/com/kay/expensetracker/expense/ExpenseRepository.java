@@ -24,6 +24,12 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
     )
     List<Expense> getAllExpenses(@Param("app_user_id") Long id);
 
+    @Query(
+            value = "SELECT * FROM expense e WHERE e.app_user_id = :app_user_id AND e.date = :date",
+            nativeQuery = true
+    )
+    List<Expense> getExpensesPerDay(@Param("app_user_id") Long id, @Param("date") LocalDate date);
+
 
     //todo exception handle 해줘야함.
     @Query(

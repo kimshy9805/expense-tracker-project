@@ -138,4 +138,44 @@ public class ExpenseService {
         return expenseList;
     }
 
+
+    /*
+        record tracking
+     */
+
+    public Long getTotalAmountPerDay (AppUser appUser, LocalDate date) {
+        List<Expense> expenseList = expenseRepository.getExpensesPerDay(appUser.getId(), date);
+        if (expenseList == null) {
+            throw new IllegalStateException("no available records given date");
+        }
+        Long totalAmount = expenseList.stream()
+                .map(e -> e.getAmount())
+                .reduce(0L, Long::sum);
+
+        return totalAmount;
+    }
+
+    //TODO expensify 에서 어캐 하는지 확인
+
+    public Long getTotalAmountPerWeek(AppUser appUser, LocalDate date) {
+        return 34343L;
+    }
+    
+    public Long getTotalAmountPerMonth() {
+
+        return Long.valueOf(43343);
+    }
+
+    public Long getTotalAmountPerYear() {
+        return Long.valueOf(4343);
+    }
+
+    public Long getTotalAmountSelected() {
+        return Long.valueOf(4343);
+    }
+
+
+
+
+
 }
