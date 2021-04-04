@@ -12,9 +12,12 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.Converter;
 import java.lang.annotation.Annotation;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.lang.reflect.*;
 import java.util.stream.Collectors;
@@ -124,10 +127,10 @@ public class ExpenseService {
             case ("category"):
                 expenseList.sort(Comparator.comparing(Expense::getCategory));
                 break;
-            case("merchant"):
+            case ("merchant"):
                 expenseList.sort(Comparator.comparing(Expense::getMerchant));
                 break;
-            case("date"):
+            case ("date"):
                 return expenseList.stream()
                         .filter(e -> !e.getDate().isAfter(request.getTo()) && !e.getDate().isBefore(request.getFrom()))
                         .sorted(Comparator.comparing(Expense::getDate))
@@ -138,12 +141,11 @@ public class ExpenseService {
         return expenseList;
     }
 
-
     /*
         record tracking
      */
 
-    public Long getTotalAmountPerDay (AppUser appUser, LocalDate date) {
+    public Long getTotalAmountPerDay(AppUser appUser, LocalDate date) {
         List<Expense> expenseList = expenseRepository.getExpensesPerDay(appUser.getId(), date);
         if (expenseList == null) {
             throw new IllegalStateException("no available records given date");
@@ -160,7 +162,7 @@ public class ExpenseService {
     public Long getTotalAmountPerWeek(AppUser appUser, LocalDate date) {
         return 34343L;
     }
-    
+
     public Long getTotalAmountPerMonth() {
 
         return Long.valueOf(43343);
@@ -170,12 +172,99 @@ public class ExpenseService {
         return Long.valueOf(4343);
     }
 
-    public Long getTotalAmountSelected() {
-        return Long.valueOf(4343);
+
+    public Long getSelectedAmount(AppUser appUser, List<Expense> selectedExpense) {
+        Long selectedAmount = selectedExpense.stream()
+                .map(e -> e.getAmount())
+                .reduce(0L, Long::sum);
+        return selectedAmount;
     }
 
 
+    //TODO reverse the order
+    public List<Expense> getUpToDateExpense(AppUser appUser) {
+        //1. check today
+        LocalDate to = LocalDate.now();
+        LocalDate from = to.withDayOfMonth(1);
 
+        List<Expense> expenseList = expenseRepository.getAllExpenses(appUser.getId());
+        ExpenseSortRequest request = new ExpenseSortRequest("date", from, to);
+        return sortByType(expenseList, request);
+    }
 
+    /*
+        Pi-Chart calculation
+     */
 
+    public HashMap<ExpenseCategory, DataSet> getPiChart (AppUser appUser, LocalDate date){
+        HashMap<ExpenseCategory, DataSet> piChart = new HashMap<>();
+        logger.info("today" + date);
+        Month month = date.getMonth();
+        LocalDate from;
+        LocalDate to;
+        Long totalAmount = 0L;
+
+        if (month == LocalDate.now().getMonth()) {
+            from = date.withDayOfMonth(1);
+            to = date.withDayOfMonth(date.lengthOfMonth());
+        } else {
+            from = date.withDayOfMonth(1);
+            to = date;
+        }
+
+        logger.info("date " + from + " and " + to);
+
+        List<Expense> expenseList = expenseRepository.getAllExpenses(appUser.getId());
+        ExpenseSortRequest request = new ExpenseSortRequest("date", from, to);
+        List<Expense> sortedExpenseList = sortByType(expenseList, request);
+
+        for (Expense expense: sortedExpenseList) {
+            if (!piChart.containsKey(expense.getCategory())) {
+                DataSet data = new DataSet(expense.getAmount());
+                piChart.put(expense.getCategory(), data);
+                piChart.get(expense.getCategory()).setAmount(expense.getAmount());
+            } else {
+                Long amount = piChart.getOrDefault(expense.getCategory(), new DataSet((0L))).getAmount() + expense.getAmount();
+                piChart.getOrDefault(expense.getCategory(), new DataSet((0L))).setAmount(amount);
+            }
+            logger.info("piChart: " + expense.getCategory() + " inside " + piChart.get(expense.getCategory()).getAmount());
+            totalAmount += expense.getAmount();
+        }
+
+        Long finalTotalAmount = totalAmount;
+        DecimalFormat decimalFormat = new DecimalFormat("0.00");
+        piChart.forEach((key, value) -> {
+            double percentage = (double) value.getAmount() / (double) finalTotalAmount;
+            logger.info(decimalFormat.format(percentage));
+            value.setPercent(Double.parseDouble(decimalFormat.format(percentage)));
+        });
+
+        logger.info(String.valueOf(piChart.get(ExpenseCategory.CAR).getPercent()));
+        return piChart;
+    }
+
+    public static class DataSet {
+        private Long amount;
+        private double percent;
+
+        public DataSet(Long amount) {
+            this.amount = amount;
+        }
+
+        public Long getAmount() {
+            return amount;
+        }
+
+        public void setAmount(Long amount) {
+            this.amount = amount;
+        }
+
+        public double getPercent() {
+            return percent;
+        }
+
+        public void setPercent(double percent) {
+            this.percent = percent;
+        }
+    }
 }

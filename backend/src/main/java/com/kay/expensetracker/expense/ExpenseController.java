@@ -2,13 +2,18 @@ package com.kay.expensetracker.expense;
 
 
 import com.kay.expensetracker.appuser.AppUser;
-import org.apache.tomcat.jni.Local;
+import com.kay.expensetracker.currency.CurrencyDAO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+
+import static com.kay.expensetracker.expense.ExpenseService.*;
 
 @RestController
 @RequestMapping(path = "api/v1/expense-tracker/expenses")
@@ -22,9 +27,8 @@ public class ExpenseController {
      */
 
     @GetMapping
-    public String currentPage(@AuthenticationPrincipal AppUser appUser) {
-        System.out.println(appUser.getEmail());
-        return "in expenses page";
+    public List<Expense> currentPage(@AuthenticationPrincipal AppUser appUser) {
+        return expenseService.getUpToDateExpense(appUser);
     }
 
     @GetMapping(path = "/getAll")
@@ -40,6 +44,30 @@ public class ExpenseController {
     @GetMapping(path = "/filter")
     public List<Expense> getSortedExpense(@AuthenticationPrincipal AppUser appUser, @RequestBody ExpenseSortRequest request) {
         return expenseService.getSortedExpense(appUser, request);
+    }
+
+    @GetMapping(path = "/total")
+    public Long getTotalAmount(@AuthenticationPrincipal AppUser appUser, @RequestBody LocalDate date) {
+        return expenseService.getTotalAmountPerDay(appUser, date);
+    }
+
+    @GetMapping(path = "/select")
+    public Long getSelectedAmount(@AuthenticationPrincipal AppUser appUser, @RequestBody List<Expense> selectedExpense) {
+        return expenseService.getSelectedAmount(appUser, selectedExpense);
+    }
+
+    @GetMapping(path = "/pi")
+    public HashMap<ExpenseCategory, DataSet> getPiChart(@AuthenticationPrincipal AppUser appUser,
+                                                        @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        return expenseService.getPiChart(appUser, date);
+    }
+
+    @GetMapping(path = "/currency")
+    public ResponseEntity<String> getCurrency() {
+
+        CurrencyDAO dao = new CurrencyDAO();
+
+        return dao.getCurrencyInfo();
     }
 
     /*
