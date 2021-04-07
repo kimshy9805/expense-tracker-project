@@ -3,6 +3,9 @@ package com.kay.expensetracker.expense;
 
 import com.kay.expensetracker.appuser.AppUser;
 import com.kay.expensetracker.currency.CurrencyDAO;
+import com.kay.expensetracker.expense.model.Expense;
+import com.kay.expensetracker.expense.model.ExpenseRequest;
+import com.kay.expensetracker.expense.model.ExpenseSortRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -63,11 +66,9 @@ public class ExpenseController {
     }
 
     @GetMapping(path = "/currency")
-    public ResponseEntity<String> getCurrency() {
-
+    public void getCurrency() {
         CurrencyDAO dao = new CurrencyDAO();
-
-        return dao.getCurrencyInfo();
+        dao.getCurrencyInfo();
     }
 
     /*

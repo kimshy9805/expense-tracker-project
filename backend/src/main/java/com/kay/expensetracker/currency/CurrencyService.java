@@ -7,9 +7,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class CurrencyService {
 
-    @Autowired
-    private CurrencyDAO currencyDAO;
-
+//    @Autowired
+//    private CurrencyDAO currencyDAO;
+//
 
 
 

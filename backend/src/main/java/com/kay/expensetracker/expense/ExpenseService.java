@@ -3,19 +3,18 @@ package com.kay.expensetracker.expense;
 
 import com.kay.expensetracker.appuser.AppUser;
 import com.kay.expensetracker.appuser.AppUserRepository;
+import com.kay.expensetracker.expense.model.Expense;
+import com.kay.expensetracker.expense.model.ExpenseRequest;
+import com.kay.expensetracker.expense.model.ExpenseSortRequest;
 import com.kay.expensetracker.registration.token.ConfirmationTokenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.convert.ReadingConverter;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.Converter;
-import java.lang.annotation.Annotation;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;

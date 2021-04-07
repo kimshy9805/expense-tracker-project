@@ -1,8 +1,9 @@
-package com.kay.expensetracker.expense;
+package com.kay.expensetracker.expense.model;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kay.expensetracker.appuser.AppUser;
+import com.kay.expensetracker.expense.ExpenseCategory;
 import lombok.*;
 
 import javax.persistence.*;

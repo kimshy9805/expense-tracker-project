@@ -1,7 +1,7 @@
 package com.kay.expensetracker.appuser;
 
 
-import com.kay.expensetracker.expense.Expense;
+import com.kay.expensetracker.expense.model.Expense;
 import com.kay.expensetracker.registration.token.ConfirmationToken;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
