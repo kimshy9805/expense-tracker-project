@@ -3,7 +3,9 @@ package com.kay.expensetracker.expense;
 
 import com.kay.expensetracker.appuser.AppUser;
 import com.kay.expensetracker.appuser.AppUserRepository;
+import com.kay.expensetracker.currency.CurrencyService;
 import com.kay.expensetracker.expense.model.Expense;
+import com.kay.expensetracker.expense.model.ExpenseCategory;
 import com.kay.expensetracker.expense.model.ExpenseRequest;
 import com.kay.expensetracker.expense.model.ExpenseSortRequest;
 import com.kay.expensetracker.registration.token.ConfirmationTokenRepository;
@@ -32,6 +34,8 @@ public class ExpenseService {
     private AppUserRepository appUserRepository;
     @Autowired
     private ConfirmationTokenRepository confirmationTokenRepository;
+    @Autowired
+    private CurrencyService currencyService;
     private Expense toBeUpdatedExpense;
 
     public void insertExpense(AppUser appUser, ExpenseRequest request) {
@@ -100,6 +104,7 @@ public class ExpenseService {
                     break;
                 case "exchangeType":
                     toBeUpdatedExpense.setExchangeType(request.getExchangeType());
+                    //TODO 여기다가 CurrencyService ?
                     break;
                 case "description":
                     toBeUpdatedExpense.setDescription(request.getDescription());

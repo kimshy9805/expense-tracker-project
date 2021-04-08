@@ -1,4 +1,4 @@
-package com.kay.expensetracker.expense;
+package com.kay.expensetracker.expense.model;
 
 public enum ExpenseCategory {
     ADVERTISING("advertising"),

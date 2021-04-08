@@ -22,11 +22,14 @@ public class CurrencyDAO {
 //    private RestTemplate restTemplate;
 
     //TODO currency를 변환하면 field + money값도 바뀌기 service에서 구축 내일 고고 
-    public void getCurrencyInfo() {
+    public Currency getCurrencyInfo() {
         RestTemplate restTemplate = new RestTemplate();
 
         Currency currency = restTemplate.getForObject(CURRENCY_URL, Currency.class);
         logger.info("hi" + currency.toString());
+        logger.info("hey " + currency.getRates().get("SGD"));
+
+        return currency;
     }
 }
 
