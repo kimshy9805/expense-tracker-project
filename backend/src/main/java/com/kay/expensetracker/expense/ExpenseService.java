@@ -73,6 +73,12 @@ public class ExpenseService {
     public void updateExpenseById(AppUser appUser, Long id, ExpenseRequest request) {
         Expense toBeUpdatedExpense = expenseRepository.findById(id).get();
 
+        //cannot change amount if conversion is required.
+        if (request.getIsConversionRequired()) {
+            logger.info("hi I am here -------");
+            updateExchangeType(toBeUpdatedExpense, request);
+        }
+
         updateAttributes(toBeUpdatedExpense, request);
 
         logger.info("enum" + toBeUpdatedExpense.getCategory());
@@ -81,13 +87,14 @@ public class ExpenseService {
                 Math.toIntExact(appUser.getId()),
                 toBeUpdatedExpense.getAmount(),
                 toBeUpdatedExpense.getDate(),
-                toBeUpdatedExpense.getExchangeType(),
+                toBeUpdatedExpense.getExchangeType().toString(),
                 toBeUpdatedExpense.getMerchant(),
                 toBeUpdatedExpense.getCategory().toString(),
                 toBeUpdatedExpense.getDescription()
         );
     }
 
+    //TODO 해당 attribute가 request에 없을시 ignore하는 property필요.
     private void updateAttributes(Expense toBeUpdatedExpense, ExpenseRequest request) {
         Field[] fields = request.getClass().getDeclaredFields();
         for (Field field : fields) {
@@ -100,11 +107,12 @@ public class ExpenseService {
                     toBeUpdatedExpense.setDate(request.getDate());
                     break;
                 case "amount":
-                    toBeUpdatedExpense.setAmount(request.getAmount());
+                    if (!request.getIsConversionRequired())
+                        toBeUpdatedExpense.setAmount(request.getAmount());
                     break;
                 case "exchangeType":
-                    toBeUpdatedExpense.setExchangeType(request.getExchangeType());
-                    //TODO 여기다가 CurrencyService ?
+                    if (!request.getIsConversionRequired())
+                        toBeUpdatedExpense.setExchangeType(request.getExchangeType());
                     break;
                 case "description":
                     toBeUpdatedExpense.setDescription(request.getDescription());
@@ -116,6 +124,13 @@ public class ExpenseService {
                     break;
             }
         }
+    }
+
+    private void updateExchangeType(Expense toBeUpdatedExpense, ExpenseRequest request) {
+        double exchangedAmount = currencyService.getCurrencyExchange(toBeUpdatedExpense.getAmount(),
+                toBeUpdatedExpense.getExchangeType(), request.getExchangeType());
+        toBeUpdatedExpense.setExchangeType(request.getExchangeType());
+        toBeUpdatedExpense.setAmount(Math.round(exchangedAmount));
     }
 
     /*
@@ -175,7 +190,6 @@ public class ExpenseService {
     public Long getTotalAmountPerYear() {
         return Long.valueOf(4343);
     }
-
 
     public Long getSelectedAmount(AppUser appUser, List<Expense> selectedExpense) {
         Long selectedAmount = selectedExpense.stream()

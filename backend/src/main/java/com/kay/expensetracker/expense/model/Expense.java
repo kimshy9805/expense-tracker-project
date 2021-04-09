@@ -27,8 +27,8 @@ public class Expense {
     private LocalDate date;
     @Column(nullable = false)
     private Long amount;
-    @Column(nullable = false)
-    private String exchangeType;
+    @Enumerated(EnumType.STRING)
+    private ExpenseCurrency exchangeType;
     //could be another referenced table.
     @Enumerated(EnumType.STRING)
     private ExpenseCategory category;
@@ -42,7 +42,7 @@ public class Expense {
     )
     private AppUser appUser;
 
-    public Expense(String merchant, LocalDate date, Long amount, String exchangeType, ExpenseCategory category, String description, AppUser appUser) {
+    public Expense(String merchant, LocalDate date, Long amount, ExpenseCurrency exchangeType, ExpenseCategory category, String description, AppUser appUser) {
         this.merchant = merchant;
         this.date = date;
         this.amount = amount;
@@ -70,7 +70,7 @@ public class Expense {
         return amount;
     }
 
-    public String getExchangeType() {
+    public ExpenseCurrency getExchangeType() {
         return exchangeType;
     }
 

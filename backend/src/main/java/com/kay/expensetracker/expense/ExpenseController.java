@@ -6,6 +6,8 @@ import com.kay.expensetracker.currency.Currency;
 import com.kay.expensetracker.currency.CurrencyDAO;
 import com.kay.expensetracker.currency.CurrencyService;
 import com.kay.expensetracker.expense.model.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,9 +22,11 @@ import static com.kay.expensetracker.expense.ExpenseService.*;
 @RestController
 @RequestMapping(path = "api/v1/expense-tracker/expenses")
 public class ExpenseController {
-
+    Logger logger = LoggerFactory.getLogger(ExpenseController.class);
     @Autowired
     private ExpenseService expenseService;
+    @Autowired
+    private CurrencyService currencyService;
 
     /*
         HTTP GET Method
@@ -65,16 +69,18 @@ public class ExpenseController {
     }
 
     @GetMapping(path = "/currency")
-    public void getCurrency() {
-        CurrencyService service = new CurrencyService();
-
-        service.getCurrencyExchange(550, ExpenseCurrency.CNH, ExpenseCurrency.EUR);
+    public double getCurrency(@RequestParam("amount") long amount,
+                            @RequestParam("from") ExpenseCurrency from,
+                            @RequestParam("to") ExpenseCurrency to) {
+        logger.info("param" + from + " " + to);
+        return currencyService.getCurrencyExchange(amount, from, to);
     }
 
     /*
         HTTP POST Method
      */
-
+    //TODO ㅂ방금 requestbody에서 cateogory해서 넣엇는데 category null로 표기되서 애먹음.
+    //exception처리해야줘야함.
     @PostMapping
     public String insertExpense(@AuthenticationPrincipal AppUser appUser, @RequestBody ExpenseRequest request) {
         expenseService.insertExpense(appUser, request);
@@ -95,6 +101,7 @@ public class ExpenseController {
         HTTP PUT Method
      */
 
+    //isConversionRequired true라면 다르게 handle.
     @PutMapping(path = "/{id}")
     public String updateExpense(@AuthenticationPrincipal AppUser appUser, @PathVariable Long id, @RequestBody ExpenseRequest request) {
         expenseService.updateExpenseById(appUser, id, request);

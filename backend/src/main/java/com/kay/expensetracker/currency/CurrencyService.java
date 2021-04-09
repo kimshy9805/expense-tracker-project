@@ -24,6 +24,7 @@ public class CurrencyService {
         CurrencyDAO currencyDAO = new CurrencyDAO();
 
         Currency currency = currencyDAO.getCurrencyInfo();
+        currencyMap = new HashMap<>();
         Double fromCurrency;
         Double toCurrency;
         double exchangedAmount;
@@ -45,8 +46,8 @@ public class CurrencyService {
         return (double) amount * to / from;
     }
 
-    private void getCurrencyMap(JSONObject jsonObject) {
-        jsonObject.forEach((key, value) -> {
+    private void getCurrencyMap(JSONObject currencyList) {
+        currencyList.forEach((key, value) -> {
             if (value.getClass() == Integer.class) {
                 currencyMap.put((String) key, ((Integer) value).doubleValue());
             } else {
@@ -54,6 +55,4 @@ public class CurrencyService {
             }
         });
     }
-
-
 }
