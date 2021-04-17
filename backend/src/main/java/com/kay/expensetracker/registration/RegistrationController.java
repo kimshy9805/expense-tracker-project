@@ -3,7 +3,7 @@ package com.kay.expensetracker.registration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping(path = "api/v1/expense-tracker/registration")
 public class RegistrationController {

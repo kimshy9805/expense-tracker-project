@@ -19,6 +19,7 @@ import java.util.List;
 
 import static com.kay.expensetracker.expense.ExpenseService.*;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping(path = "api/v1/expense-tracker/expenses")
 public class ExpenseController {
@@ -33,9 +34,14 @@ public class ExpenseController {
      */
 
     @GetMapping
-    public List<Expense> currentPage(@AuthenticationPrincipal AppUser appUser) {
-        return expenseService.getUpToDateExpense(appUser);
+    public String cuur() {
+        return "hi";
     }
+    //TODO AuthenticationPrincipal때문에 이사단남. 
+//    @GetMapping
+//    public List<Expense> currentPage(@AuthenticationPrincipal AppUser appUser) {
+//        return expenseService.getUpToDateExpense(appUser);
+//    }
 
     @GetMapping(path = "/getAll")
     public List<Expense> getAllExpenses(@AuthenticationPrincipal AppUser appUser) {
