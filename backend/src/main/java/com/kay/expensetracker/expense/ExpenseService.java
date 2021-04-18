@@ -1,14 +1,12 @@
 package com.kay.expensetracker.expense;
 
 
-import com.kay.expensetracker.appuser.AppUser;
-import com.kay.expensetracker.appuser.AppUserRepository;
 import com.kay.expensetracker.currency.CurrencyService;
 import com.kay.expensetracker.expense.model.Expense;
 import com.kay.expensetracker.expense.model.ExpenseCategory;
 import com.kay.expensetracker.expense.model.ExpenseRequest;
 import com.kay.expensetracker.expense.model.ExpenseSortRequest;
-import com.kay.expensetracker.registration.token.ConfirmationTokenRepository;
+//import com.kay.expensetracker.registration.token.ConfirmationTokenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,47 +28,45 @@ public class ExpenseService {
 
     @Autowired
     private ExpenseRepository expenseRepository;
-    @Autowired
-    private AppUserRepository appUserRepository;
-    @Autowired
-    private ConfirmationTokenRepository confirmationTokenRepository;
+    //    @Autowired
+//    private AppUserRepository appUserRepository;
+//    @Autowired
+//    private ConfirmationTokenRepository confirmationTokenRepository;
     @Autowired
     private CurrencyService currencyService;
     private Expense toBeUpdatedExpense;
 
-    public void insertExpense(AppUser appUser, ExpenseRequest request) {
+    public void insertExpense(ExpenseRequest request) {
         //todo if duplicate then throw exception
+        logger.info("this is live test", +request.getAmount());
         Expense newRequest = new Expense(
                 request.getMerchant(),
                 request.getDate(),
                 request.getAmount(),
                 request.getExchangeType(),
                 request.getCategory(),
-                request.getDescription(),
-                appUserRepository.findByEmail(appUser.getEmail()).get()
+                request.getDescription()
         );
-
         expenseRepository.save(newRequest);
     }
 
-    public List<Expense> getAllExpense(AppUser appUser) {
-        return expenseRepository.getAllExpenses(appUser.getId());
+    public List<Expense> getAllExpense() {
+        return expenseRepository.getAllExpenses();
     }
 
-    public Expense getByExpenseId(int id, AppUser appUser) {
-        System.out.println(appUser.getId());
-        return expenseRepository.getByExpenseId(id, Math.toIntExact(appUser.getId()));
+    public Expense getByExpenseId(int id) {
+        return expenseRepository.getByExpenseId(id);
     }
 
-    public void deleteExpenseById(AppUser appUser, Long id) {
+    public void deleteExpenseById(Long id) {
         boolean exists = expenseRepository.existsById(id);
         if (!exists) {
             throw new IllegalStateException("id does not exist");
         }
-        expenseRepository.deleteExpenseById(Math.toIntExact(id), Math.toIntExact(appUser.getId()));
+        expenseRepository.deleteExpenseById(Math.toIntExact(id));
     }
 
-    public void updateExpenseById(AppUser appUser, Long id, ExpenseRequest request) {
+    public void updateExpenseById(Long id, ExpenseRequest request) {
         Expense toBeUpdatedExpense = expenseRepository.findById(id).get();
 
         //cannot change amount if conversion is required.
@@ -81,10 +77,7 @@ public class ExpenseService {
 
         updateAttributes(toBeUpdatedExpense, request);
 
-        logger.info("enum" + toBeUpdatedExpense.getCategory());
-
         expenseRepository.updateExpenseById(Math.toIntExact(id),
-                Math.toIntExact(appUser.getId()),
                 toBeUpdatedExpense.getAmount(),
                 toBeUpdatedExpense.getDate(),
                 toBeUpdatedExpense.getExchangeType().toString(),
@@ -136,8 +129,9 @@ public class ExpenseService {
     /*
         sort operation
      */
-    public List<Expense> getSortedExpense(AppUser appUser, ExpenseSortRequest request) {
-        List<Expense> expenseList = expenseRepository.getAllExpenses(appUser.getId());
+    public List<Expense> getSortedExpense(ExpenseSortRequest request) {
+        List<Expense> expenseList = expenseRepository.getAllExpenses();
+        logger.info("list" + expenseList.toString());
         return sortByType(expenseList, request);
     }
 
@@ -164,11 +158,13 @@ public class ExpenseService {
         record tracking
      */
 
-    public Long getTotalAmountPerDay(AppUser appUser, LocalDate date) {
-        List<Expense> expenseList = expenseRepository.getExpensesPerDay(appUser.getId(), date);
+    public Long getTotalAmountPerDay(LocalDate date) {
+        List<Expense> expenseList = expenseRepository.getExpensesPerDay(date);
+
         if (expenseList == null) {
             throw new IllegalStateException("no available records given date");
         }
+
         Long totalAmount = expenseList.stream()
                 .map(e -> e.getAmount())
                 .reduce(0L, Long::sum);
@@ -176,45 +172,42 @@ public class ExpenseService {
         return totalAmount;
     }
 
-    //TODO expensify 에서 어캐 하는지 확인
-
-    public Long getTotalAmountPerWeek(AppUser appUser, LocalDate date) {
-        return 34343L;
-    }
-
-    public Long getTotalAmountPerMonth() {
-
-        return Long.valueOf(43343);
-    }
-
-    public Long getTotalAmountPerYear() {
-        return Long.valueOf(4343);
-    }
-
-    public Long getSelectedAmount(AppUser appUser, List<Expense> selectedExpense) {
+    //TODO expensify 에서 어캐 하는지 확인 이것도 있고
+    //getExpneseList based on month, year, week
+//
+//    public Long getTotalAmountPerWeek(AppUser appUser, LocalDate date) {
+//        return 34343L;
+//    }
+//
+//    public Long getTotalAmountPerMonth() {
+//
+//        return Long.valueOf(43343);
+//    }
+//
+//    public Long getTotalAmountPerYear() {
+//        return Long.valueOf(4343);
+//    }
+//
+    public Long getSelectedAmount(List<Expense> selectedExpense) {
         Long selectedAmount = selectedExpense.stream()
                 .map(e -> e.getAmount())
                 .reduce(0L, Long::sum);
         return selectedAmount;
     }
 
-
     //TODO reverse the order
-    public List<Expense> getUpToDateExpense(AppUser appUser) {
-        //1. check today
+    public List<Expense> getUpToDateExpense() {
         LocalDate to = LocalDate.now();
         LocalDate from = to.withDayOfMonth(1);
-
-        List<Expense> expenseList = expenseRepository.getAllExpenses(appUser.getId());
         ExpenseSortRequest request = new ExpenseSortRequest("date", from, to);
-        return sortByType(expenseList, request);
+        return getSortedExpense(request);
     }
 
     /*
         Pi-Chart calculation
      */
 
-    public HashMap<ExpenseCategory, DataSet> getPiChart (AppUser appUser, LocalDate date){
+    public HashMap<ExpenseCategory, DataSet> getPiChart (LocalDate date){
         HashMap<ExpenseCategory, DataSet> piChart = new HashMap<>();
         logger.info("today" + date);
         Month month = date.getMonth();
@@ -232,7 +225,7 @@ public class ExpenseService {
 
         logger.info("date " + from + " and " + to);
 
-        List<Expense> expenseList = expenseRepository.getAllExpenses(appUser.getId());
+        List<Expense> expenseList = expenseRepository.getAllExpenses();
         ExpenseSortRequest request = new ExpenseSortRequest("date", from, to);
         List<Expense> sortedExpenseList = sortByType(expenseList, request);
 
@@ -257,7 +250,7 @@ public class ExpenseService {
             value.setPercent(Double.parseDouble(decimalFormat.format(percentage)));
         });
 
-        logger.info(String.valueOf(piChart.get(ExpenseCategory.CAR).getPercent()));
+//        logger.info(String.valueOf(piChart.get(ExpenseCategory.CAR).getPercent()));
         return piChart;
     }
 

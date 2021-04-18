@@ -1,43 +1,43 @@
-package com.kay.expensetracker.appuser;
-
-import com.kay.expensetracker.registration.token.ConfirmationToken;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Optional;
-
-@Repository
-@Transactional(readOnly = true)
-public interface AppUserRepository extends JpaRepository<AppUser, Long> {
-    Optional<AppUser> findByEmail(String email);
-
-    @Query(
-            value = "SELECT a.last_name FROM app_user a WHERE a.last_name = ?1",
-            nativeQuery = true
-    )
-    String findByLastName(String lastName);
-
-    @Query(
-            value = "SELECT a.first_name FROM app_user a WHERE a.first_name = ?1",
-            nativeQuery = true
-    )
-    String findByFirstName(String firstName);
+//package com.kay.expensetracker.appuser;
+//
+//import com.kay.expensetracker.registration.token.ConfirmationToken;
+//import org.springframework.data.jpa.repository.JpaRepository;
+//import org.springframework.data.jpa.repository.Modifying;
+//import org.springframework.data.jpa.repository.Query;
+//import org.springframework.stereotype.Repository;
+//import org.springframework.transaction.annotation.Transactional;
+//
+//import java.util.List;
+//import java.util.Optional;
+//
+//@Repository
+//@Transactional(readOnly = true)
+//public interface AppUserRepository extends JpaRepository<AppUser, Long> {
+//    Optional<AppUser> findByEmail(String email);
+//
 //    @Query(
-//            value = "SELECT DISTINCT city_id FROM weather_city WHERE city_name = ?1",
+//            value = "SELECT a.last_name FROM app_user a WHERE a.last_name = ?1",
 //            nativeQuery = true
 //    )
-
-
-    @Transactional
-    @Modifying
-    @Query("UPDATE AppUser a " +
-            "SET a.enabled = TRUE WHERE a.email = ?1")
-    void enableAppUser(String email);
-
-
-
-}
+//    String findByLastName(String lastName);
+//
+//    @Query(
+//            value = "SELECT a.first_name FROM app_user a WHERE a.first_name = ?1",
+//            nativeQuery = true
+//    )
+//    String findByFirstName(String firstName);
+////    @Query(
+////            value = "SELECT DISTINCT city_id FROM weather_city WHERE city_name = ?1",
+////            nativeQuery = true
+////    )
+//
+//
+//    @Transactional
+//    @Modifying
+//    @Query("UPDATE AppUser a " +
+//            "SET a.enabled = TRUE WHERE a.email = ?1")
+//    void enableAppUser(String email);
+//
+//
+//
+//}

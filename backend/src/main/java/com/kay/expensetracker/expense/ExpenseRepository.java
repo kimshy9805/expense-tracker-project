@@ -15,32 +15,31 @@ import java.util.List;
 public interface ExpenseRepository extends JpaRepository<Expense, Long> {
 
     @Query(
-            value = "SELECT * FROM expense e WHERE e.app_user_id = :app_user_id",
+            value = "SELECT * FROM expense e",
             nativeQuery = true
     )
-    List<Expense> getAllExpenses(@Param("app_user_id") Long id);
+    List<Expense> getAllExpenses();
 
     @Query(
-            value = "SELECT * FROM expense e WHERE e.app_user_id = :app_user_id AND e.date = :date",
+            value = "SELECT * FROM expense e WHERE e.date = :date",
             nativeQuery = true
     )
-    List<Expense> getExpensesPerDay(@Param("app_user_id") Long id, @Param("date") LocalDate date);
-
+    List<Expense> getExpensesPerDay(@Param("date") LocalDate date);
 
     //todo exception handle 해줘야함.
     @Query(
-            value = "SELECT * FROM expense e WHERE e.app_user_id = :app_user_id AND e.expense_id = :expense_id",
+            value = "SELECT * FROM expense e WHERE e.expense_id = :expense_id",
             nativeQuery = true
     )
-    Expense getByExpenseId(@Param("expense_id") int expenseId, @Param("app_user_id") int appId);
+    Expense getByExpenseId(@Param("expense_id") int expenseId);
 
     @Transactional
     @Modifying
     @Query(
-            value = "DELETE FROM expense e WHERE e.app_user_id = :app_user_id AND e.expense_id = :expense_id",
+            value = "DELETE FROM expense e WHERE e.expense_id = :expense_id",
             nativeQuery = true
     )
-    void deleteExpenseById(@Param("expense_id") int expenseId, @Param("app_user_id") int appId);
+    void deleteExpenseById(@Param("expense_id") int expenseId);
 
     @Transactional
     @Modifying
@@ -52,10 +51,10 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
                     "merchant = :merchant, " +
                     "category = :category, " +
                     "description = :description " +
-                    "WHERE expense_id = :expense_id AND app_user_id = :app_user_id",
+                    "WHERE expense_id = :expense_id",
             nativeQuery = true
     )
-    void updateExpenseById(@Param("expense_id") int expenseId, @Param("app_user_id") int appId,
+    void updateExpenseById(@Param("expense_id") int expenseId,
                            @Param("amount") Long amount,
                            @Param("date") LocalDate date,
                            @Param("exchangeType") String exchangeType,

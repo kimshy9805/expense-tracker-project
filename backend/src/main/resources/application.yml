@@ -6,7 +6,7 @@ server:
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/expense
+    url: jdbc:postgresql://localhost:5432/expense_logic_db
     username:
     password:
   jpa:

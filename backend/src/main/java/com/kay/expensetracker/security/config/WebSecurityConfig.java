@@ -26,7 +26,7 @@
 //@Configuration
 //@AllArgsConstructor
 //@EnableWebSecurity
-//public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
+//public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //
 //    //use AppuserSerivce
 //    @Autowired
@@ -72,15 +72,5 @@
 //        provider.setPasswordEncoder(passwordEncoder.bCryptPasswordEncoder());
 //        provider.setUserDetailsService(appUserService);
 //        return provider;
-//    }
-//
-//    private final long MAX_AGE_SECS = 3600;
-//
-//    @Override
-//    public void addCorsMappings(CorsRegistry registry) {
-//        registry.addMapping("/**")
-//                .allowedOrigins("*")
-//                .allowedMethods("HEAD", "OPTIONS", "GET", "POST", "PUT", "PATCH", "DELETE")
-//                .maxAge(MAX_AGE_SECS);
 //    }
 //}

@@ -1,5 +1,5 @@
-package com.kay.expensetracker.email;
-
-public interface EmailSender {
-    void send(String to, String email);
-}
+//package com.kay.expensetracker.email;
+//
+//public interface EmailSender {
+//    void send(String to, String email);
+//}

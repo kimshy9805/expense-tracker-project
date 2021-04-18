@@ -1,16 +1,14 @@
 package com.kay.expensetracker.expense;
 
-
-import com.kay.expensetracker.appuser.AppUser;
 import com.kay.expensetracker.currency.Currency;
 import com.kay.expensetracker.currency.CurrencyDAO;
 import com.kay.expensetracker.currency.CurrencyService;
 import com.kay.expensetracker.expense.model.*;
+import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -32,64 +30,49 @@ public class ExpenseController {
     /*
         HTTP GET Method
      */
-
     @GetMapping
-    public String cuur() {
-        return "hi";
+    public List<Expense> currentPage() {
+        return expenseService.getUpToDateExpense();
     }
-    //TODO AuthenticationPrincipal때문에 이사단남. 
-//    @GetMapping
-//    public List<Expense> currentPage(@AuthenticationPrincipal AppUser appUser) {
-//        return expenseService.getUpToDateExpense(appUser);
-//    }
 
     @GetMapping(path = "/getAll")
-    public List<Expense> getAllExpenses(@AuthenticationPrincipal AppUser appUser) {
-        return expenseService.getAllExpense(appUser);
+    public List<Expense> getAllExpenses() {
+        return expenseService.getAllExpense();
     }
 
     @GetMapping(path = "{id}")
-    public Expense getByExpenseId(@PathVariable int id, @AuthenticationPrincipal AppUser appUser) {
-        return expenseService.getByExpenseId(id, appUser);
+    public Expense getByExpenseId(@PathVariable int id) {
+        return expenseService.getByExpenseId(id);
     }
 
     @GetMapping(path = "/filter")
-    public List<Expense> getSortedExpense(@AuthenticationPrincipal AppUser appUser, @RequestBody ExpenseSortRequest request) {
-        return expenseService.getSortedExpense(appUser, request);
+    public List<Expense> getSortedExpense(@RequestBody ExpenseSortRequest request) {
+        return expenseService.getSortedExpense(request);
     }
 
     @GetMapping(path = "/total")
-    public Long getTotalAmount(@AuthenticationPrincipal AppUser appUser, @RequestBody LocalDate date) {
-        return expenseService.getTotalAmountPerDay(appUser, date);
+    public Long getTotalAmountPerDay(@RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        return expenseService.getTotalAmountPerDay(date);
     }
 
     @GetMapping(path = "/select")
-    public Long getSelectedAmount(@AuthenticationPrincipal AppUser appUser, @RequestBody List<Expense> selectedExpense) {
-        return expenseService.getSelectedAmount(appUser, selectedExpense);
+    public Long getSelectedAmount(@RequestBody List<Expense> selectedExpense) {
+        return expenseService.getSelectedAmount(selectedExpense);
     }
 
     @GetMapping(path = "/pi")
-    public HashMap<ExpenseCategory, DataSet> getPiChart(@AuthenticationPrincipal AppUser appUser,
-                                                        @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-        return expenseService.getPiChart(appUser, date);
-    }
-
-    @GetMapping(path = "/currency")
-    public double getCurrency(@RequestParam("amount") long amount,
-                            @RequestParam("from") ExpenseCurrency from,
-                            @RequestParam("to") ExpenseCurrency to) {
-        logger.info("param" + from + " " + to);
-        return currencyService.getCurrencyExchange(amount, from, to);
+    public HashMap<ExpenseCategory, DataSet> getPiChart(@RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        return expenseService.getPiChart(date);
     }
 
     /*
         HTTP POST Method
      */
-    //TODO ㅂ방금 requestbody에서 cateogory해서 넣엇는데 category null로 표기되서 애먹음.
-    //exception처리해야줘야함.
+//    //exception처리해야줘야함.
+    //TODO category 없이 post하면 이후에 category를 넣어도 없는상태로 db에 저장됨.
     @PostMapping
-    public String insertExpense(@AuthenticationPrincipal AppUser appUser, @RequestBody ExpenseRequest request) {
-        expenseService.insertExpense(appUser, request);
+    public String insertExpense(@RequestBody ExpenseRequest request) {
+        expenseService.insertExpense(request);
         return "success";
     }
 
@@ -98,8 +81,8 @@ public class ExpenseController {
      */
 
     @DeleteMapping(path = "/{id}")
-    public String deleteExpense(@AuthenticationPrincipal AppUser appUser, @PathVariable Long id) {
-        expenseService.deleteExpenseById(appUser, id);
+    public String deleteExpense(@PathVariable Long id) {
+        expenseService.deleteExpenseById(id);
         return "success";
     }
 
@@ -109,15 +92,8 @@ public class ExpenseController {
 
     //isConversionRequired true라면 다르게 handle.
     @PutMapping(path = "/{id}")
-    public String updateExpense(@AuthenticationPrincipal AppUser appUser, @PathVariable Long id, @RequestBody ExpenseRequest request) {
-        expenseService.updateExpenseById(appUser, id, request);
+    public String updateExpense(@PathVariable Long id, @RequestBody ExpenseRequest request) {
+        expenseService.updateExpenseById(id, request);
         return "success";
     }
-
-
-
 }
-
-//logout 안하고 re run해도 website에 쿠키가 남아서 authentication이 없는듯
-//logout 해줘라e
-//@AuthenticationPrincipal로 현재 login 된 user의 info를 받을수있음.

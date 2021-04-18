@@ -1,6 +1,6 @@
-package com.kay.expensetracker.appuser;
-
-public enum AppUserRole {
-    USER,
-    ADMIN
-}
+//package com.kay.expensetracker.appuser;
+//
+//public enum AppUserRole {
+//    USER,
+//    ADMIN
+//}
