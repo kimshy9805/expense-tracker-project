@@ -27,9 +27,7 @@ export function HomePage(props) {
     const response = await axios.get(DEFAULT_PAGE_URL).catch((err) => {
       console.log("err", err);
     });
-    console.log(typeof response.data);
-    console.log(response.data.length);
-    console.log(response.data.map((exp, idk) => exp.merchant));
+    // console.log(response.data.map((exp, idk) => exp.merchant));
     setExpenses(response.data);
   };
 

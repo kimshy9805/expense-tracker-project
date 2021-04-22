@@ -50,7 +50,7 @@ public class Expense {
         this.exchangeType = exchangeType;
         this.category = category;
         this.description = description;
-//        this.appUser = appUser;
+        //        this.appUser = appUser;
     }
 
     //prevent infinite recursion
@@ -58,6 +58,12 @@ public class Expense {
 //    public AppUser getAppUser() {
 //        return appUser;
 //    }
+
+
+    //to get primary key, use getter to generate it for frontend.
+    public Long getId() {
+        return id;
+    }
 
     public String getMerchant() {
         return merchant;

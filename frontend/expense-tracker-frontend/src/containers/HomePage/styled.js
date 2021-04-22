@@ -3,7 +3,7 @@ import BackGroundImg from "../../assets/pictures/company_team.jpg";
 
 export const HomePageContainer = styled.div`
   width: 100%;
-  height: 100vh;
+  height: 1000px;
   background-image: url(${BackGroundImg});
   padding: 0;
   background-size: cover;
@@ -13,7 +13,7 @@ export const HomePageContainer = styled.div`
 //background filter
 export const BackGroundFilter = styled.div`
   width: 100%;
-  height: 100%;
+  height: 100vh;
   background-color: rgba(53, 53, 53, 0.5);
   display: flex;
   flex-direction: column;
@@ -73,32 +73,85 @@ export const ExpenseDetailContainer = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: space-between;
 `;
 
 /*
   Expense Container related
 */
 export const ExpenseContainer = styled.div`
-  width: 78%;
+  width: 100%;
   height: 100%;
   padding: 0 10em;
   display: flex;
   flex-direction: column;
-  background-color: #fff;
 `;
 
 //ExpenseWrapper
-export const ExpenseWrapper = styled.div``;
+export const ExpenseWrapper = styled.div`
+  width: 100%;
+  height: 80%;
+  background-color: rgba(113, 113, 113, 0.48);
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+`;
+
+//DateWrapper
+export const DateWrapper = styled.div`
+  width: 40%;
+  height: 100%;
+  padding: 1em 1em;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+`;
 
 //merchantWrapper
-export const MerchantWrapper = styled.div``;
+export const MerchantWrapper = styled.div`
+  width: 130%;
+  height: 100%;
+  padding: 1em 1em;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-right: 20px;
+`;
 
 //amountWrapper
-export const AmountWrapper = styled.div``;
+export const AmountWrapper = styled.div`
+  width: 50%;
+  height: 100%;
+  padding: 1em 0em;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+`;
 
 //categoryWrapper
-export const CategoryWrapper = styled.div``;
+export const CategoryWrapper = styled.div`
+  width: 50%;
+  height: 100%;
+  padding: 1em 0em;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+`;
 
 //descriptionWrapper
-export const descriptionWrapper = styled.div``;
+export const DescriptionWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  padding: 1em 1em;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+`;
+
+//Content text
+export const TextWrapper = styled.h3`
+  color: #fff;
+  margin: 0;
+  font-size: 15px;
+  font-weight: regular;
+  line-height: 1.5;
+`;
