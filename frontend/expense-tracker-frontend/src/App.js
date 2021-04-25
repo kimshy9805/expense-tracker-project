@@ -17,14 +17,11 @@ function App() {
     <Router>
       <Switch>
         <Route exact path="/" component={FrontPage}></Route>
-        {/* <Route
+        <Route
           exact
           path="/login"
-          component={() => {
-            window.location.href = "http://localhost:8080/login";
-            return null;
-          }}
-        ></Route> */}
+          component={LoginPage}
+        ></Route>
         {/* <Route exact path="/registration" component={RegistrationPage}></Route> */}
         <Route exact path="/home" component={HomePage}></Route>
         <Route>404 not found page</Route>

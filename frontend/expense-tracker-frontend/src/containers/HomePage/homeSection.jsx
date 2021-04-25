@@ -8,6 +8,8 @@ import { Navbar } from "components/navbar";
 import { Marginer } from "components/marginer";
 import { Button } from "components/button";
 import { Expense } from "./Expense";
+import { AddExpenseForm } from "components/addExpenseForm";
+import { AuthHeader } from "services/AuthHeaderService";
 
 const stateSelector = createSelector(
   [makeSelectUsers, makeSelectProducts],
@@ -33,14 +35,14 @@ export function HomeSection(props) {
   //attributes
   const { expenseRedux, product } = useSelector(stateSelector);
   const [expenses, setExpenses] = useState([]);
-  const [expense, setExpense] = useState({});
+  // const [expense, setExpense] = useState({});
   const [month, setMonth] = useState(monthNames[monthNumber]);
   const [account, setAccount] = useState("");
-  const [popup, setPopup] = useState(false);
+  const [isPopup, setIsPopup] = useState(false);
 
   //get
   const getExpense = async () => {
-    const response = await Axios.get("/expenses").catch((err) =>
+    const response = await Axios.get("/expenses", {headers: AuthHeader()}).catch((err) =>
       console.log(err)
     );
     if (response && response.data) {
@@ -49,40 +51,39 @@ export function HomeSection(props) {
   };
 
   //post
-  const postExpense = async () => {
+  const postExpense = async (expense) => {
     const response = await Axios.post("/expenses", expense).catch((err) => {
-      console.log(response.data);
-      if (response && response.data) {
-        getExpense();
-      }
+      console.log(err);
     });
+    if (response && response.data) {
+      setExpenses([...expenses, expense]);
+    }
   };
 
   //delete
   const deleteExpense = async (id) => {
     const response = await Axios.delete(`/expenses/${id}`).catch((err) => {
-      console.log(response.data);
-      if (response) {
-        getExpense();
-      }
+      console.log(err);
     });
+    if (response) {
+      setExpenses(expenses.filter((exp) => exp.id != id));
+    }
   };
 
   useEffect(() => {
     getExpense();
   }, []);
 
-  const handleChange = (e) => {
-    setExpense({ ...expense, [e.target.name]: e.target.value });
-  };
+  // const handleChange = (e) => {
+  //   setExpense({ ...expense, [e.target.name]: e.target.value });
+  // };
 
-  const TogglePopup = () => {
-    console.log("popup!");
-    setPopup(!popup);
+  const toggleIsPopup = () => {
+    console.log("popup change!");
+    setIsPopup(!isPopup);
   };
 
   const isEmptyUser = !expenses || (expenses && expenses.length === 0);
-  if (isEmptyUser) return null;
 
   return (
     <Style.HomePageContainer>
@@ -95,7 +96,7 @@ export function HomeSection(props) {
             <Style.SecondNavbarText>{account}</Style.SecondNavbarText>
           </Style.AccountWrapper>
           <Style.SecondNavbarText>{month}</Style.SecondNavbarText>
-          <Button onClick={TogglePopup}>New expense</Button>
+          <Button onClick={toggleIsPopup}>New expense</Button>
         </Style.SecondNavbar>
         <Marginer direction="vertical" margin="1em" />
         <Marginer direction="vertical" margin="1em" />
@@ -120,26 +121,9 @@ export function HomeSection(props) {
           <Expense key={expense.id} {...expense} onDelete={deleteExpense} />
         ))}
         <Marginer direction="vertical" margin="5em" />
-        <h3>Add expense here</h3>
-        <form onSubmit={postExpense}>
-          <label htmlFor="merchant">Merchant</label>
-          <input
-            name="merchant"
-            placeholder="Merchant Name"
-            onChange={handleChange}
-          />
-          <label htmlFor="date">Date</label>
-          <input name="date" placeholder="2021-04-22" onChange={handleChange} />
-          <label htmlFor="amount">Amount</label>
-          <input name="amount" onChange={handleChange} />
-          <label htmlFor="exchangeType">ExchangeType</label>
-          <input name="exchangeType" onChange={handleChange} />
-          <label htmlFor="category">Category</label>
-          <input name="category" onChange={handleChange} />
-          <label htmlFor="description">Description</label>
-          <input name="description" onChange={handleChange} />
-          <button type="submit">ADD</button>
-        </form>
+        {isPopup && (
+          <AddExpenseForm onAdd={postExpense} handleClose={toggleIsPopup} />
+        )}
       </Style.BackGroundFilter>
     </Style.HomePageContainer>
   );

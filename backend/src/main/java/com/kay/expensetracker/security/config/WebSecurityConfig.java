@@ -1,42 +1,42 @@
-//package com.kay.expensetracker.security.config;
-//
-//
-//import com.kay.expensetracker.appuser.AppUserRole;
-//import com.kay.expensetracker.appuser.AppUserService;
-//import com.kay.expensetracker.security.PasswordEncoder;
-//import lombok.AllArgsConstructor;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.context.annotation.Bean;
-//import org.springframework.context.annotation.Configuration;
-//import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-//import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-//import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-//import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-//import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-//import org.springframework.security.core.userdetails.User;
-//import org.springframework.security.core.userdetails.UserDetails;
-//import org.springframework.security.core.userdetails.UserDetailsService;
-//import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-//import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-//import org.springframework.web.servlet.config.annotation.CorsRegistry;
-//import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-//
-//import static com.kay.expensetracker.appuser.AppUserRole.*;
-//
-//@Configuration
-//@AllArgsConstructor
-//@EnableWebSecurity
-//public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-//
-//    //use AppuserSerivce
+package com.kay.expensetracker.security.config;
+
+
+import com.kay.expensetracker.security.JWTAuthenticationFilter;
+import com.kay.expensetracker.security.MyUserDetailsService;
+import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+
+@Configuration
+@AllArgsConstructor
+@EnableWebSecurity
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+    //use AppuserSerivce
 //    @Autowired
 //    private AppUserService appUserService;
-//    @Autowired
-//    private PasswordEncoder passwordEncoder;
-//
-//
-//    @Override
+    @Autowired
+    private MyUserDetailsService myUserDetailsService;
+    @Autowired
+    private JWTAuthenticationFilter jwtAuthenticationFilter;
+
+
+    //    @Override
 //    protected void configure(HttpSecurity http) throws Exception {
+//
+//
+//
 //        http
 //                .csrf().disable()
 //                .authorizeRequests()
@@ -59,18 +59,42 @@
 //                .invalidateHttpSession(true)
 //                .logoutSuccessUrl("/login");
 //    }
-//
-//    //pass one
-//    @Override
-//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.cors().and().csrf().disable()
+                .authorizeRequests().antMatchers("/api/v1/expense-tracker/auth/login").permitAll()
+                .anyRequest().authenticated()
+                .and().sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+    }
+
+    //pass one
+    //configure 시 내 userdetail service 써!
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(myUserDetailsService);
 //        auth.authenticationProvider(daoAuthenticationProvider());
-//    }
-//
-//    @Bean
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return  NoOpPasswordEncoder.getInstance();
+    }
+
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
+
+    //    @Bean
 //    public DaoAuthenticationProvider daoAuthenticationProvider() {
 //        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
 //        provider.setPasswordEncoder(passwordEncoder.bCryptPasswordEncoder());
 //        provider.setUserDetailsService(appUserService);
 //        return provider;
 //    }
-//}
+}

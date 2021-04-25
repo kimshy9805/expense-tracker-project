@@ -13,6 +13,7 @@ import {
 
 export const Expense = (props) => {
   //이런식으로 할때는 props안에 attributes를 하나하나씩 나열해서 사용해야함.
+  //or props.id 
   const {
     id,
     date,

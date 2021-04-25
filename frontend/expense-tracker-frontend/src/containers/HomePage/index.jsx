@@ -20,20 +20,20 @@ const actionDispatch = (dispatch) => ({
 });
 
 export function HomePage(props) {
-  const { expenses, product } = useSelector(stateSelector);
-  const { setExpenses, setProduct } = actionDispatch(useDispatch());
+  // const { expenses, product } = useSelector(stateSelector);
+  // const { setExpenses, setProduct } = actionDispatch(useDispatch());
 
-  const fetchUsers = async () => {
-    const response = await axios.get(DEFAULT_PAGE_URL).catch((err) => {
-      console.log("err", err);
-    });
-    // console.log(response.data.map((exp, idk) => exp.merchant));
-    setExpenses(response.data);
-  };
+  // const fetchUsers = async () => {
+  //   const response = await axios.get(DEFAULT_PAGE_URL).catch((err) => {
+  //     console.log("err", err);
+  //   });
+  //   // console.log(response.data.map((exp, idk) => exp.merchant));
+  //   setExpenses(response.data);
+  // };
 
-  useEffect(() => {
-    fetchUsers();
-  }, []);
+  // useEffect(() => {
+  //   fetchUsers();
+  // }, []);
 
   return (
     <div>

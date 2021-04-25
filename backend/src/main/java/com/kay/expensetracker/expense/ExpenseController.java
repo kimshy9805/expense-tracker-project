@@ -17,7 +17,6 @@ import java.util.List;
 
 import static com.kay.expensetracker.expense.ExpenseService.*;
 
-@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping(path = "api/v1/expense-tracker/expenses")
 public class ExpenseController {
