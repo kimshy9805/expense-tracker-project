@@ -2,6 +2,7 @@ package com.kay.expensetracker.expense.model;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.kay.expensetracker.user.User;
 import lombok.*;
 
 import javax.persistence.*;
@@ -35,30 +36,28 @@ public class Expense {
     private ExpenseCategory category;
     private String description;
 
-//    //oneToone (foreign key + owner of this relationship)
-//    @ManyToOne(fetch = FetchType.LAZY, targetEntity = AppUser.class)
-//    @JoinColumn(
-//            name = "app_user_id",
-//            referencedColumnName = "app_user_id"
-//    )
-//    private AppUser appUser;
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = User.class)
+    @JoinColumn(
+            name = "user_id",
+            referencedColumnName = "user_id"
+    )
+    private User user;
 
-    public Expense(String merchant, LocalDate date, Long amount, ExpenseCurrency exchangeType, ExpenseCategory category, String description) {
+    public Expense(String merchant, LocalDate date, Long amount, ExpenseCurrency exchangeType, ExpenseCategory category, String description, User user) {
         this.merchant = merchant;
         this.date = date;
         this.amount = amount;
         this.exchangeType = exchangeType;
         this.category = category;
         this.description = description;
-        //        this.appUser = appUser;
+        this.user = user;
     }
 
-    //prevent infinite recursion
-//    @JsonIgnore
-//    public AppUser getAppUser() {
-//        return appUser;
-//    }
-
+    //    prevent infinite recursion
+    @JsonIgnore
+    public User getUser() {
+        return user;
+    }
 
     //to get primary key, use getter to generate it for frontend.
     public Long getId() {

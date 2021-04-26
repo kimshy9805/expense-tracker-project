@@ -28,6 +28,7 @@ export const LoginForm = (props) => {
   const [error, setError] = useState(null);
 
   const onSubmit = async (values) => {
+    console.log("ho");
     setError(null);
     console.log(values);
     const response = await Axios.post("auth/login", values).catch((err) => {

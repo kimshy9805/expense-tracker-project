@@ -2,8 +2,10 @@ package com.kay.expensetracker.security;
 
 
 import com.kay.expensetracker.expense.ExpenseController;
+import com.kay.expensetracker.registration.RegistrationRequest;
 import com.kay.expensetracker.security.model.AuthenticationRequest;
 import com.kay.expensetracker.security.model.AuthenticationResponse;
+import com.kay.expensetracker.user.UserService;
 import com.kay.expensetracker.util.JwtUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,12 +28,9 @@ public class SecurityController {
     @Autowired
     private MyUserDetailsService userDetailsService;
     @Autowired
+    private UserService userService;
+    @Autowired
     private JwtUtil jwtUtil;
-
-    @GetMapping
-    public String getDefaultPage() {
-        return "hi";
-    }
 
     //token 주는건데 login 이라고 생각하면될듯?
     @PostMapping("/login")
@@ -50,4 +49,10 @@ public class SecurityController {
 
         return ResponseEntity.ok(new AuthenticationResponse(jwt));
     }
+
+    @PostMapping("/registration")
+    public String registerUser (@RequestBody RegistrationRequest request) {
+        return userService.signUpUser(request);
+    }
+
 }

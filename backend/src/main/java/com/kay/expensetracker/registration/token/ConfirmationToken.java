@@ -27,9 +27,9 @@
 //    @Column(nullable = false)
 //    private LocalDateTime expiresAt;
 //    private LocalDateTime confirmedAt;
-////    @ManyToOne(fetch = FetchType.LAZY, targetEntity = AppUser.class)
+////    @ManyToOne(fetch = FetchType.LAZY, targetEntity = User.class)
 ////    @JoinColumn(name = "app_user_id", referencedColumnName = "app_user_id")
-////    private AppUser appUser;
+////    private User appUser;
 //
 //
 //
@@ -59,7 +59,7 @@
 ////            nullable = false,
 ////            name = "app_user_id"
 ////    )
-////    private AppUser appUser;
+////    private User appUser;
 //
 ////joinColumn should indicate parent table pk.
 ////이건 fix 더이상 건들지마 이건 맞아.

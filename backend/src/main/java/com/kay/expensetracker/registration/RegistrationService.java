@@ -1,6 +1,6 @@
 //package com.kay.expensetracker.registration;
 //
-//import com.kay.expensetracker.appuser.AppUser;
+//import com.kay.expensetracker.appuser.User;
 //import com.kay.expensetracker.appuser.AppUserRole;
 //import com.kay.expensetracker.appuser.AppUserService;
 //import com.kay.expensetracker.email.EmailSender;
@@ -34,7 +34,7 @@
 //        }
 //
 //        String token = appUserService.signUpUser(
-//                new AppUser(
+//                new User(
 //                        request.getFirstName(),
 //                        request.getLastName(),
 //                        request.getEmail(),

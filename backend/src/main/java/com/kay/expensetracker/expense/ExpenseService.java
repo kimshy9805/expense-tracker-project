@@ -7,6 +7,9 @@ import com.kay.expensetracker.expense.model.ExpenseCategory;
 import com.kay.expensetracker.expense.model.ExpenseRequest;
 import com.kay.expensetracker.expense.model.ExpenseSortRequest;
 //import com.kay.expensetracker.registration.token.ConfirmationTokenRepository;
+import com.kay.expensetracker.user.User;
+import com.kay.expensetracker.user.UserRepository;
+import com.kay.expensetracker.user.UserRole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +31,9 @@ public class ExpenseService {
 
     @Autowired
     private ExpenseRepository expenseRepository;
+    @Autowired
+    private UserRepository userRepository;
     //    @Autowired
-//    private AppUserRepository appUserRepository;
-//    @Autowired
 //    private ConfirmationTokenRepository confirmationTokenRepository;
     @Autowired
     private CurrencyService currencyService;
@@ -45,7 +48,8 @@ public class ExpenseService {
                 request.getAmount(),
                 request.getExchangeType(),
                 request.getCategory(),
-                request.getDescription()
+                request.getDescription(),
+                new User("kim", "kimshy5840@gmail.com", "123", UserRole.USER)
         );
         expenseRepository.save(newRequest);
     }
@@ -175,7 +179,7 @@ public class ExpenseService {
     //TODO expensify 에서 어캐 하는지 확인 이것도 있고
     //getExpneseList based on month, year, week
 //
-//    public Long getTotalAmountPerWeek(AppUser appUser, LocalDate date) {
+//    public Long getTotalAmountPerWeek(User user, LocalDate date) {
 //        return 34343L;
 //    }
 //
@@ -207,7 +211,7 @@ public class ExpenseService {
         Pi-Chart calculation
      */
 
-    public HashMap<ExpenseCategory, DataSet> getPiChart (LocalDate date){
+    public HashMap<ExpenseCategory, DataSet> getPiChart(LocalDate date) {
         HashMap<ExpenseCategory, DataSet> piChart = new HashMap<>();
         logger.info("today" + date);
         Month month = date.getMonth();
@@ -229,7 +233,7 @@ public class ExpenseService {
         ExpenseSortRequest request = new ExpenseSortRequest("date", from, to);
         List<Expense> sortedExpenseList = sortByType(expenseList, request);
 
-        for (Expense expense: sortedExpenseList) {
+        for (Expense expense : sortedExpenseList) {
             if (!piChart.containsKey(expense.getCategory())) {
                 DataSet data = new DataSet(expense.getAmount());
                 piChart.put(expense.getCategory(), data);

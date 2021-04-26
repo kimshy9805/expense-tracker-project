@@ -15,9 +15,9 @@ import {
   SubmitButton,
 } from "./common";
 import * as yup from "yup";
-import axios from "axios";
+import Axios from "../../http-common";
 
-const PASSWORD_REGEX = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
+// const PASSWORD_REGEX = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
 
 const validationSchema = yup.object({
   fullName: yup
@@ -27,9 +27,9 @@ const validationSchema = yup.object({
   email: yup.string().email("Please enter a valid email address").required(),
   password: yup
     .string()
-    .matches(PASSWORD_REGEX, "Please enter a strong password")
+    // .matches(PASSWORD_REGEX, "Please enter a strong password")
     .required(),
-  confirmPassword: yup
+  confirmedPassword: yup
     .string()
     .required("Please confirm your password")
     .when("password", {
@@ -47,12 +47,15 @@ export const SignUpForm = (props) => {
 
   const onSubmit = async (values) => {
     const { confirmedPassword, ...data } = values;
-    const response = await axios.post("/auth/registration", data).catch((err) => {
-      if (err && err.response) setError(err.response.data.message);
-      setSuccess(null);
-    });
+    const response = await Axios.post("/auth/registration", data).catch(
+      (err) => {
+        if (err && err.response) setError(err.response.data.message);
+        setSuccess(null);
+      }
+    );
 
     if (response && response.data) {
+      console.log(response);
       setSuccess(response.data.message);
       formik.resetForm();
       setError(null);
@@ -79,32 +82,37 @@ export const SignUpForm = (props) => {
         <FieldContainer>
           <Input
             name="fullName"
-            type="text"
+            type="fullName"
             placeholder="Full Name"
             value={formik.values.fullName}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
-          <FieldError>
-            {formik.touched.fullName && formik.errors.fullName
-              ? formik.errors.fullName
-              : ""}
-          </FieldError>
+
+          {
+            <FieldError>
+              {formik.touched.fullName && formik.errors.fullName
+                ? formik.errors.fullName
+                : ""}
+            </FieldError>
+          }
         </FieldContainer>
         <FieldContainer>
           <Input
             name="email"
-            type="email"
-            placeholder="Email"
             value={formik.values.email}
             onChange={formik.handleChange}
+            type="email"
+            placeholder="Email"
             onBlur={formik.handleBlur}
           />
-          <FieldError>
-            {formik.touched.email && formik.errors.email
-              ? formik.errors.email
-              : ""}
-          </FieldError>
+          {
+            <FieldError>
+              {formik.touched.email && formik.errors.email
+                ? formik.errors.email
+                : ""}
+            </FieldError>
+          }
         </FieldContainer>
         <FieldContainer>
           <Input
@@ -115,26 +123,31 @@ export const SignUpForm = (props) => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
-          <FieldError>
-            {formik.touched.password && formik.errors.password
-              ? formik.errors.password
-              : ""}
-          </FieldError>
+          {
+            <FieldError>
+              {formik.touched.password && formik.errors.password
+                ? formik.errors.password
+                : ""}
+            </FieldError>
+          }
         </FieldContainer>
         <FieldContainer>
           <Input
             name="confirmedPassword"
-            type="password"
+            type="confirmedPassword"
             placeholder="Confirmed Password"
             value={formik.values.confirmedPassword}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
-          <FieldError>
-            {formik.touched.confirmedPassword && formik.errors.confirmedPassword
-              ? formik.errors.confirmedPassword
-              : ""}
-          </FieldError>
+          {
+            <FieldError>
+              {formik.touched.confirmedPassword &&
+              formik.errors.confirmedPassword
+                ? formik.errors.confirmedPassword
+                : ""}
+            </FieldError>
+          }
         </FieldContainer>
         <Marginer direction="vertical" margin={10} />
         <SubmitButton type="submit" disabled={!formik.isValid}>
