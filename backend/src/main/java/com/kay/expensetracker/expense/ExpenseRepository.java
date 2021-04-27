@@ -15,20 +15,20 @@ import java.util.List;
 public interface ExpenseRepository extends JpaRepository<Expense, Long> {
 
     @Query(
-            value = "SELECT * FROM expense e",
+            value = "SELECT * FROM expenses e",
             nativeQuery = true
     )
     List<Expense> getAllExpenses();
 
     @Query(
-            value = "SELECT * FROM expense e WHERE e.date = :date",
+            value = "SELECT * FROM expenses e WHERE e.date = :date",
             nativeQuery = true
     )
     List<Expense> getExpensesPerDay(@Param("date") LocalDate date);
 
     //todo exception handle 해줘야함.
     @Query(
-            value = "SELECT * FROM expense e WHERE e.expense_id = :expense_id",
+            value = "SELECT * FROM expenses e WHERE e.expense_id = :expense_id",
             nativeQuery = true
     )
     Expense getByExpenseId(@Param("expense_id") int expenseId);
@@ -36,7 +36,7 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
     @Transactional
     @Modifying
     @Query(
-            value = "DELETE FROM expense e WHERE e.expense_id = :expense_id",
+            value = "DELETE FROM expenses e WHERE e.expense_id = :expense_id",
             nativeQuery = true
     )
     void deleteExpenseById(@Param("expense_id") int expenseId);
@@ -44,7 +44,7 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
     @Transactional
     @Modifying
     @Query(
-            value = "UPDATE expense " +
+            value = "UPDATE expenses " +
                     "SET amount = :amount, " +
                     "date = :date, " +
                     "exchange_type = :exchangeType, " +

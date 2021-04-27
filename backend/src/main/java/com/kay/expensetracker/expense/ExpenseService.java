@@ -48,8 +48,7 @@ public class ExpenseService {
                 request.getAmount(),
                 request.getExchangeType(),
                 request.getCategory(),
-                request.getDescription(),
-                new User("kim", "kimshy5840@gmail.com", "123", UserRole.USER)
+                request.getDescription()
         );
         expenseRepository.save(newRequest);
     }

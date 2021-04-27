@@ -46,6 +46,7 @@ const ExpenseWrapper = styled.div`
   align-items: center;
 `;
 
+//TODO formik 으로 바꾸기?
 export const AddExpenseForm = (props) => {
   const initialState = {
     date: "",
@@ -63,6 +64,13 @@ export const AddExpenseForm = (props) => {
     setExpense({ ...expense, [name]: value });
   };
 
+  const handleOnSubmit = (e) => {
+    e.preventDefault();
+    if (!expense.date || !expense.merchant) return;
+    onAdd(expense);
+    setExpense(initialState);
+  };
+
   //onSubmit ={onAdd(expense)} 하면 무한 rendering... 저런식으로 조건을 걸어줘야함.
   return (
     <PopUpWrapper>
@@ -76,14 +84,7 @@ export const AddExpenseForm = (props) => {
         </CloseIcon>
         <ExpenseWrapper>
           <h3>Add Expense here</h3>
-          <form
-            onSubmit={(event) => {
-              event.preventDefault();
-              if (!expense.date || !expense.merchant) return;
-              onAdd(expense);
-              setExpense(initialState);
-            }}
-          >
+          <form onSubmit={handleOnSubmit}>
             <label htmlFor="merchant">Merchant</label>
             <input
               name="merchant"
@@ -104,14 +105,7 @@ export const AddExpenseForm = (props) => {
             <input name="category" onChange={handleInputChange} />
             <label htmlFor="description">Description</label>
             <input name="description" onChange={handleInputChange} />
-            <button
-              type="submit"
-              onClick={() => {
-                handleClose();
-              }}
-            >
-              ADD
-            </button>
+            <button type="submit">ADD</button>
           </form>
         </ExpenseWrapper>
       </PopUpBox>

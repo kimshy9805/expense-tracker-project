@@ -42,7 +42,7 @@ export function HomeSection(props) {
 
   //get
   const getExpense = async () => {
-    const response = await Axios.get("/expenses", {headers: AuthHeader()}).catch((err) =>
+    const response = await Axios.get("/expenses").catch((err) =>
       console.log(err)
     );
     if (response && response.data) {

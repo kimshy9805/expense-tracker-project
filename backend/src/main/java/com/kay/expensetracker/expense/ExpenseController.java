@@ -19,7 +19,7 @@ import static com.kay.expensetracker.expense.ExpenseService.*;
 
 @RestController
 @RequestMapping(path = "api/v1/expense-tracker/expenses")
-@CrossOrigin(value = "*")
+@CrossOrigin(value = "*", allowedHeaders = "*")
 public class ExpenseController {
     Logger logger = LoggerFactory.getLogger(ExpenseController.class);
     @Autowired

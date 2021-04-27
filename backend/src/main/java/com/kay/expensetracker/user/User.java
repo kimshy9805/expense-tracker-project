@@ -14,14 +14,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+
 @Entity
-@Table
-@Getter
+@Table(name = "users")
 @Setter
-@EqualsAndHashCode
 @NoArgsConstructor
-@ToString
-public class User  {
+@EqualsAndHashCode
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(
@@ -58,6 +57,29 @@ public class User  {
         this.userRole = userRole;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public UserRole getUserRole() {
+        return userRole;
+    }
+
+    public List<Expense> getExpense() {
+        return expense;
+    }
 }
 
 //mappedBy는 여기 class 의 이름인가?

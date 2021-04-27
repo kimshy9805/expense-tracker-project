@@ -26,8 +26,6 @@ public class SecurityController {
     @Autowired
     private AuthenticationManager authenticationManager;
     @Autowired
-    private MyUserDetailsService userDetailsService;
-    @Autowired
     private UserService userService;
     @Autowired
     private JwtUtil jwtUtil;
@@ -43,7 +41,7 @@ public class SecurityController {
         }
         logger.info("successfully authenticated");
 
-        final UserDetails userDetails = userDetailsService
+        final UserDetails userDetails = userService
                 .loadUserByUsername(authenticationRequest.getEmail());
         final String jwt = jwtUtil.generateToken(userDetails);
 

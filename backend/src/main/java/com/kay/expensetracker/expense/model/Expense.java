@@ -9,7 +9,7 @@ import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
-@Table
+@Table(name = "expenses")
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode
@@ -30,7 +30,6 @@ public class Expense {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private ExpenseCurrency exchangeType;
-    //could be another referenced table.
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private ExpenseCategory category;
@@ -43,14 +42,13 @@ public class Expense {
     )
     private User user;
 
-    public Expense(String merchant, LocalDate date, Long amount, ExpenseCurrency exchangeType, ExpenseCategory category, String description, User user) {
+    public Expense(String merchant, LocalDate date, Long amount, ExpenseCurrency exchangeType, ExpenseCategory category, String description) {
         this.merchant = merchant;
         this.date = date;
         this.amount = amount;
         this.exchangeType = exchangeType;
         this.category = category;
         this.description = description;
-        this.user = user;
     }
 
     //    prevent infinite recursion

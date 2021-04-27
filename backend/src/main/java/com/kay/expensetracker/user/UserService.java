@@ -3,9 +3,12 @@ package com.kay.expensetracker.user;
 //import com.kay.expensetracker.registration.token.ConfirmationToken;
 //import com.kay.expensetracker.registration.token.ConfirmationTokenService;
 import com.kay.expensetracker.registration.RegistrationRequest;
+import com.kay.expensetracker.security.model.JwtUserDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -13,10 +16,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.Collection;
+import java.util.Collections;
 
 /*
     service where it find user once login
@@ -30,15 +31,21 @@ public class UserService implements UserDetailsService {
     private final static String USER_NOT_FOUND_MSG = "user with email %s not found";
     @Autowired
     private UserRepository userRepository;
-//    @Autowired
-//    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 //    @Autowired
 //    private ConfirmationTokenService confirmationTokenService;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return (UserDetails) userRepository.findByEmail(email)
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException(String.format(USER_NOT_FOUND_MSG, email)));
+
+        return new JwtUserDetails(user.getId(), user.getFullName(), user.getEmail(), user.getPassword(), true, getAuthorities());
+    }
+
+    private Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.singletonList(new SimpleGrantedAuthority("USER"));
     }
 
 //    //first check if request user is already exist.
@@ -54,9 +61,9 @@ public class UserService implements UserDetailsService {
         }
 
         User user = new User(request.getFullName(), request.getEmail(), request.getPassword(), UserRole.USER);
-//        String encodePassword = bCryptPasswordEncoder.encode(user.getPassword());
-//        user.setPassword(encodePassword);
-//
+        String encodePassword = bCryptPasswordEncoder.encode(user.getPassword());
+        user.setPassword(encodePassword);
+
         userRepository.save(user);
         return "Successfully register the user";
     }
