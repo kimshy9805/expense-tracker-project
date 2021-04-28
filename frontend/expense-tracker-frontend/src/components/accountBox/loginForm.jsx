@@ -16,16 +16,28 @@ import {
 import * as yup from "yup";
 import Axios from "http-common";
 import { useHistory } from "react-router-dom";
+import store from "store";
+import { createSelector } from "reselect";
+import { makeSelectTokens } from "services/selectors";
+import { useSelector, useDispatch } from "react-redux";
+import { setToken } from "services/actions";
 
 const validationSchema = yup.object({
   email: yup.string().required(),
   password: yup.string().required(),
 });
 
+const stateSelector = createSelector(makeSelectTokens, (token) => ({ token }));
+const actionDispatcher = (dispatch) => ({
+  setToken: (token) => dispatch(setToken(token)),
+});
+
 export const LoginForm = (props) => {
   let history = useHistory();
   const { switchToSignup } = useContext(AccountContext);
   const [error, setError] = useState(null);
+  const { token } = useSelector(stateSelector);
+  const { setToken } = actionDispatcher(useDispatch());
 
   const onSubmit = async (values) => {
     console.log("ho");
@@ -38,10 +50,11 @@ export const LoginForm = (props) => {
     //store global jwt that can be used for every requests.
     if (response) {
       alert("Welcome back in. Authenticating...");
-      console.log("jwt is ", response.data.jwt);
-      localStorage.setItem("user", JSON.stringify(response.data));
+      let tokena = response.data.jwt.slice(1, -1);
+      console.log(tokena);
+      setToken(tokena);
       history.push("/home");
-      window.location.reload();
+      // window.location.reload();
     }
   };
 

@@ -1,9 +1,11 @@
 import { createStore, combineReducers } from "redux";
 import homePageReducer from "./containers/HomePage/reducers";
+import tokenReducer from "./services/reducers";
 
-//after simple reducers
+//3. after simple reducers
 const reducers = combineReducers({
   homePage: homePageReducer,
+  token: tokenReducer,
 });
 
 export default createStore(

@@ -1,5 +1,7 @@
 import { createSelector } from "reselect";
 
+//5. selectors
+
 //select and grab specific data from store.
 //function. takes state and give state.homePage data.
 const homePageState = (state) => state.homePage;

@@ -2,7 +2,7 @@ import React, { Component, useEffect, useState } from "react";
 import { createSelector } from "reselect";
 import { makeSelectProducts, makeSelectUsers } from "./selectors";
 import { useSelector } from "react-redux";
-import Axios from "../../http-common";
+import axiosInstanceInstance from "../../services/InterceptorService";
 import * as Style from "./styled";
 import { Navbar } from "components/navbar";
 import { Marginer } from "components/marginer";
@@ -10,6 +10,7 @@ import { Button } from "components/button";
 import { Expense } from "./Expense";
 import { AddExpenseForm } from "components/addExpenseForm";
 import { AuthHeader } from "services/AuthHeaderService";
+import axiosInstance from "../../services/InterceptorService";
 
 const stateSelector = createSelector(
   [makeSelectUsers, makeSelectProducts],
@@ -42,9 +43,9 @@ export function HomeSection(props) {
 
   //get
   const getExpense = async () => {
-    const response = await Axios.get("/expenses").catch((err) =>
-      console.log(err)
-    );
+    const response = await axiosInstance
+      .get("/expenses/getAll")
+      .catch((err) => console.log(err));
     if (response && response.data) {
       setExpenses(response.data);
     }
@@ -52,9 +53,11 @@ export function HomeSection(props) {
 
   //post
   const postExpense = async (expense) => {
-    const response = await Axios.post("/expenses", expense).catch((err) => {
-      console.log(err);
-    });
+    const response = await axiosInstance
+      .post("/expenses", expense)
+      .catch((err) => {
+        console.log(err);
+      });
     if (response && response.data) {
       setExpenses([...expenses, expense]);
     }
@@ -62,9 +65,11 @@ export function HomeSection(props) {
 
   //delete
   const deleteExpense = async (id) => {
-    const response = await Axios.delete(`/expenses/${id}`).catch((err) => {
-      console.log(err);
-    });
+    const response = await axiosInstance
+      .delete(`/expenses/${id}`)
+      .catch((err) => {
+        console.log(err);
+      });
     if (response) {
       setExpenses(expenses.filter((exp) => exp.id != id));
     }

@@ -1,8 +1,11 @@
 package com.kay.expensetracker.util;
 
+import com.kay.expensetracker.expense.ExpenseController;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +18,7 @@ import java.util.function.Function;
 public class JwtUtil {
 
     private String SECRET_KEY = "secret";
+    Logger logger = LoggerFactory.getLogger(JwtUtil.class);
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -30,6 +34,7 @@ public class JwtUtil {
     }
 
     private Claims extractAllClaims(String token) {
+        logger.info("token received: " + token);
         return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
     }
 
