@@ -3,18 +3,23 @@ import BackGroundImg from "../../assets/pictures/company_team.jpg";
 
 export const HomePageContainer = styled.div`
   width: 100%;
-  height: 1000px;
+  /* height: 100vh; means the height of this element is equal to 100% of the viewport height. */
+  height: 100vh;
   background-image: url(${BackGroundImg});
   padding: 0;
   background-size: cover;
   position: relative;
+  /* display: flex; */
+  /* flex-direction: column; */
 `;
 
 //background filter
 export const BackGroundFilter = styled.div`
   width: 100%;
   height: 100vh;
+  overflow: auto;
   background-color: rgba(53, 53, 53, 0.5);
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -25,8 +30,9 @@ export const BackGroundFilter = styled.div`
 */
 export const SecondNavbar = styled.div`
   width: 100%;
-  height: 50px;
+  min-height: 100px;
   padding: 0 53px;
+  overflow-y: hidden;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -51,7 +57,7 @@ export const SecondNavbarText = styled.h1`
 */
 export const FilterViewContainer = styled.div`
   width: 100%;
-  height: 30px;
+  min-height: 30px;
   padding: 0 10em;
   display: flex;
   flex-direction: row;
@@ -68,7 +74,7 @@ export const ViewWrapper = styled.div``;
 //ExpenseDetail
 export const ExpenseDetailContainer = styled.div`
   width: 100%;
-  height: 30px;
+  min-height: 50px;
   padding: 0 10em;
   display: flex;
   flex-direction: row;
@@ -80,7 +86,7 @@ export const ExpenseDetailContainer = styled.div`
 */
 export const ExpenseContainer = styled.div`
   width: 100%;
-  height: 100%;
+  min-height: 100%;
   padding: 0 10em;
   display: flex;
   flex-direction: column;
@@ -89,7 +95,7 @@ export const ExpenseContainer = styled.div`
 //ExpenseWrapper
 export const ExpenseWrapper = styled.div`
   width: 100%;
-  height: 80%;
+  min-height: 12%;
   background-color: rgba(113, 113, 113, 0.48);
   display: flex;
   align-items: center;

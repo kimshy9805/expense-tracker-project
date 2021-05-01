@@ -21,13 +21,13 @@ import { createSelector } from "reselect";
 import { makeSelectTokens } from "services/selectors";
 import { useSelector, useDispatch } from "react-redux";
 import { setToken } from "services/actions";
+import setAuthorizationToken from "services/axiosInstace";
 
 const validationSchema = yup.object({
   email: yup.string().required(),
   password: yup.string().required(),
 });
 
-const stateSelector = createSelector(makeSelectTokens, (token) => ({ token }));
 const actionDispatcher = (dispatch) => ({
   setToken: (token) => dispatch(setToken(token)),
 });
@@ -36,11 +36,9 @@ export const LoginForm = (props) => {
   let history = useHistory();
   const { switchToSignup } = useContext(AccountContext);
   const [error, setError] = useState(null);
-  const { token } = useSelector(stateSelector);
   const { setToken } = actionDispatcher(useDispatch());
 
   const onSubmit = async (values) => {
-    console.log("ho");
     setError(null);
     console.log(values);
     const response = await Axios.post("auth/login", values).catch((err) => {
@@ -50,9 +48,9 @@ export const LoginForm = (props) => {
     //store global jwt that can be used for every requests.
     if (response) {
       alert("Welcome back in. Authenticating...");
-      let tokena = response.data.jwt.slice(1, -1);
-      console.log(tokena);
-      setToken(tokena);
+      let token = response.data.jwt;
+      console.log("token from server ", token);
+      setToken(token);
       history.push("/home");
       // window.location.reload();
     }

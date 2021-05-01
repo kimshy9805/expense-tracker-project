@@ -13,7 +13,7 @@ import {
 
 export const Expense = (props) => {
   //이런식으로 할때는 props안에 attributes를 하나하나씩 나열해서 사용해야함.
-  //or props.id 
+  //or props.id
   const {
     id,
     date,
@@ -25,28 +25,26 @@ export const Expense = (props) => {
     onDelete,
   } = props;
   return (
-    <ExpenseContainer>
-      <ExpenseWrapper>
-        <DateWrapper>
-          <TextWrapper>{date}</TextWrapper>
-        </DateWrapper>
-        <MerchantWrapper>
-          <TextWrapper>{merchant}</TextWrapper>
-        </MerchantWrapper>
-        <AmountWrapper>
-          <TextWrapper>{amount}</TextWrapper>
-          <TextWrapper>{exchangeType}</TextWrapper>
-        </AmountWrapper>
-        <CategoryWrapper>
-          <TextWrapper>{category}</TextWrapper>
-        </CategoryWrapper>
-        <DescriptionWrapper>
-          <TextWrapper>{description}</TextWrapper>
-        </DescriptionWrapper>
-        <Button small onClick={() => onDelete(id)}>
-          remove
-        </Button>
-      </ExpenseWrapper>
-    </ExpenseContainer>
+    <ExpenseWrapper>
+      <DateWrapper>
+        <TextWrapper>{date}</TextWrapper>
+      </DateWrapper>
+      <MerchantWrapper>
+        <TextWrapper>{merchant}</TextWrapper>
+      </MerchantWrapper>
+      <AmountWrapper>
+        <TextWrapper>{amount}</TextWrapper>
+        <TextWrapper>{exchangeType}</TextWrapper>
+      </AmountWrapper>
+      <CategoryWrapper>
+        <TextWrapper>{category}</TextWrapper>
+      </CategoryWrapper>
+      <DescriptionWrapper>
+        <TextWrapper>{description}</TextWrapper>
+      </DescriptionWrapper>
+      <Button small onClick={() => onDelete(id)}>
+        remove
+      </Button>
+    </ExpenseWrapper>
   );
 };

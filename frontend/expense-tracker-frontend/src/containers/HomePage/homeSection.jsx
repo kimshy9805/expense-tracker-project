@@ -1,21 +1,22 @@
 import React, { Component, useEffect, useState } from "react";
 import { createSelector } from "reselect";
 import { makeSelectProducts, makeSelectUsers } from "./selectors";
+import { makeSelectTokens } from "../../services/selectors";
 import { useSelector } from "react-redux";
-import axiosInstanceInstance from "../../services/InterceptorService";
 import * as Style from "./styled";
 import { Navbar } from "components/navbar";
 import { Marginer } from "components/marginer";
 import { Button } from "components/button";
 import { Expense } from "./Expense";
-import { AddExpenseForm } from "components/addExpenseForm";
-import { AuthHeader } from "services/AuthHeaderService";
-import axiosInstance from "../../services/InterceptorService";
+import { AddForm } from "components/addExpenseForm";
+import axiosInstance from "services/axiosInstace";
+import Axios from "../../http-common";
 
 const stateSelector = createSelector(
-  [makeSelectUsers, makeSelectProducts],
-  (expenseRedux, product) => ({ expenseRedux, product })
+  [makeSelectUsers, makeSelectProducts, makeSelectTokens],
+  (expense, product, token) => ({ expense, product, token })
 );
+
 let monthNumber = new Date().getMonth();
 let monthNames = [
   "January",
@@ -34,18 +35,21 @@ let monthNames = [
 
 export function HomeSection(props) {
   //attributes
-  const { expenseRedux, product } = useSelector(stateSelector);
+  const { expense, product, token } = useSelector(stateSelector);
   const [expenses, setExpenses] = useState([]);
-  // const [expense, setExpense] = useState({});
   const [month, setMonth] = useState(monthNames[monthNumber]);
-  const [account, setAccount] = useState("");
   const [isPopup, setIsPopup] = useState(false);
+  let tokenBearer = { Authorization: `Bearer ${token}` };
 
   //get
   const getExpense = async () => {
-    const response = await axiosInstance
-      .get("/expenses/getAll")
-      .catch((err) => console.log(err));
+    console.log("token from front ", token);
+    const response = await Axios.get("expenses/getAll", {
+      headers: tokenBearer,
+    }).catch((err) => {
+      console.log(err);
+    });
+
     if (response && response.data) {
       setExpenses(response.data);
     }
@@ -53,11 +57,11 @@ export function HomeSection(props) {
 
   //post
   const postExpense = async (expense) => {
-    const response = await axiosInstance
-      .post("/expenses", expense)
-      .catch((err) => {
-        console.log(err);
-      });
+    const response = await Axios.post("/expenses", expense, {
+      headers: tokenBearer,
+    }).catch((err) => {
+      console.log(err);
+    });
     if (response && response.data) {
       setExpenses([...expenses, expense]);
     }
@@ -65,11 +69,11 @@ export function HomeSection(props) {
 
   //delete
   const deleteExpense = async (id) => {
-    const response = await axiosInstance
-      .delete(`/expenses/${id}`)
-      .catch((err) => {
-        console.log(err);
-      });
+    const response = await Axios.delete(`/expenses/${id}`, {
+      headers: tokenBearer,
+    }).catch((err) => {
+      console.log(err);
+    });
     if (response) {
       setExpenses(expenses.filter((exp) => exp.id != id));
     }
@@ -78,10 +82,6 @@ export function HomeSection(props) {
   useEffect(() => {
     getExpense();
   }, []);
-
-  // const handleChange = (e) => {
-  //   setExpense({ ...expense, [e.target.name]: e.target.value });
-  // };
 
   const toggleIsPopup = () => {
     console.log("popup change!");
@@ -94,11 +94,11 @@ export function HomeSection(props) {
     <Style.HomePageContainer>
       <Style.BackGroundFilter>
         <Navbar />
-        <Marginer direction="vertical" margin="3em" />
+        <Marginer direction="vertical" margin="2em" />
         <Style.SecondNavbar>
           <Style.AccountWrapper>
             <Style.SecondNavbarText>Account</Style.SecondNavbarText>
-            <Style.SecondNavbarText>{account}</Style.SecondNavbarText>
+            <Style.SecondNavbarText>hi</Style.SecondNavbarText>
           </Style.AccountWrapper>
           <Style.SecondNavbarText>{month}</Style.SecondNavbarText>
           <Button onClick={toggleIsPopup}>New expense</Button>
@@ -122,13 +122,20 @@ export function HomeSection(props) {
           <Button small>Description</Button>
         </Style.ExpenseDetailContainer>
         <Marginer direction="vertical" margin="2em" />
-        {expenses.map((expense) => (
-          <Expense key={expense.id} {...expense} onDelete={deleteExpense} />
-        ))}
+        <Style.ExpenseContainer>
+          {expenses.map((expense) => (
+            <Expense
+              onClick={() => {
+                console.log("click!");
+              }}
+              key={expense.id}
+              {...expense}
+              onDelete={deleteExpense}
+            />
+          ))}
+        </Style.ExpenseContainer>
         <Marginer direction="vertical" margin="5em" />
-        {isPopup && (
-          <AddExpenseForm onAdd={postExpense} handleClose={toggleIsPopup} />
-        )}
+        {isPopup && <AddForm onAdd={postExpense} handleClose={toggleIsPopup} />}
       </Style.BackGroundFilter>
     </Style.HomePageContainer>
   );
