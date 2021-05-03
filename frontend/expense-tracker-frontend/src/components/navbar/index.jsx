@@ -1,7 +1,7 @@
 import { Button } from "components/button";
 import { Logo } from "components/logo";
 import { Marginer } from "components/marginer";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
@@ -35,29 +35,50 @@ const LoginButton = styled(Button)`
   }
 `;
 
+//props? 이용해서 state 바꾸는거 어캐함..?
 export function Navbar(props) {
+  const [page, setPage] = useState("frontPage");
+
+  useEffect(() => {
+    setPage(props.page);
+  }, []);
+
   return (
     <NavbarContainer>
       <BrandContainer>
         <Logo inline />
       </BrandContainer>
-      <AccessibilityContainer>
-        <Link
-          to={{
-            pathname: "/registration",
-          }}
-        >
-          <Button small>Get Started </Button>
-        </Link>
-        <Marginer direction="horizontal" margin="8px" />
-        <Link
-          to={{
-            pathname: "/login",
-          }}
-        >
-          <LoginButton small>Login</LoginButton>
-        </Link>
-      </AccessibilityContainer>
+      {page === "homePage" && (
+        <AccessibilityContainer>
+          <Marginer direction="horizontal" margin="8px" />
+          <Link
+            to={{
+              pathname: "/login",
+            }}
+          >
+            <LoginButton small>Logout</LoginButton>
+          </Link>
+        </AccessibilityContainer>
+      )}
+      {page === "frontPage" && (
+        <AccessibilityContainer>
+          <Link
+            to={{
+              pathname: "/registration",
+            }}
+          >
+            <Button small>Get Started </Button>
+          </Link>
+          <Marginer direction="horizontal" margin="8px" />
+          <Link
+            to={{
+              pathname: "/login",
+            }}
+          >
+            <LoginButton small>Login</LoginButton>
+          </Link>
+        </AccessibilityContainer>
+      )}
     </NavbarContainer>
   );
 }

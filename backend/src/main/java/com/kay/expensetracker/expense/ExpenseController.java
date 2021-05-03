@@ -45,14 +45,20 @@ public class ExpenseController {
         return expenseService.getByExpenseId(id);
     }
 
-    @GetMapping(path = "/filter")
-    public List<Expense> getSortedExpense(@RequestBody ExpenseSortRequest request) {
-        return expenseService.getSortedExpense(request);
-    }
+//    @GetMapping(path = "/filter")
+//    public List<Expense> getSortedExpense(@RequestBody ExpenseSortRequest request) {
+//        return expenseService.getSortedExpense(request);
+//    }
+
 
     @GetMapping(path = "/total")
     public Long getTotalAmountPerDay(@RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         return expenseService.getTotalAmountPerDay(date);
+    }
+
+    @GetMapping(path = "/month/{month}")
+    public List<Expense> getMonthlyExpenses(@PathVariable int month) {
+        return expenseService.getMonthlyExpenses(month);
     }
 
     @GetMapping(path = "/select")
@@ -74,6 +80,16 @@ public class ExpenseController {
     public String insertExpense(@RequestBody ExpenseRequest request) {
         expenseService.insertExpense(request);
         return "success";
+    }
+
+    //TODO 원래는 getMapping인데 axios에서 @requestBody를 handle을 못함 get으로는
+    //TODO 방법찾아서 getmapping으로
+    //TODO axios -> request에서 month returns null. 해결해야함.
+    @PostMapping(path = "/filter")
+    public void getSortedExpense(@RequestBody ExpenseSortRequest request) {
+        logger.info("aa" + request.getType());
+        logger.info("bb" + request.getMonth());
+//        return expenseService.getSortTypeExpenses(request);
     }
 
     /*

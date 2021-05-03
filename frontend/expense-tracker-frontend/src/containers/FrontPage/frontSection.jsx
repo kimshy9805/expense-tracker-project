@@ -15,7 +15,7 @@ export const FrontSection = () => {
   return (
     <FrontSectionContainer>
       <BackGroundFilter>
-        <Navbar />
+        <Navbar page="frontPage" />
         <Marginer direction="vertical" margin="7em" />
         <Logo />
         <Marginer direction="vertical" margin="3em" />
@@ -26,7 +26,7 @@ export const FrontSection = () => {
         <Marginer direction="vertical" margin="2em" />
         <Link
           to={{
-            pathname: "/registration",
+            pathname: "/login",
           }}
         >
           <Button>Start Now</Button>

@@ -10,6 +10,7 @@ import com.kay.expensetracker.expense.model.ExpenseSortRequest;
 import com.kay.expensetracker.user.User;
 import com.kay.expensetracker.user.UserRepository;
 import com.kay.expensetracker.user.UserRole;
+import org.apache.tomcat.jni.Local;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,8 @@ import org.springframework.stereotype.Service;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.Month;
+import java.time.YearMonth;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -132,9 +135,9 @@ public class ExpenseService {
     /*
         sort operation
      */
-    public List<Expense> getSortedExpense(ExpenseSortRequest request) {
+
+    private List<Expense> getSortedExpense(ExpenseSortRequest request) {
         List<Expense> expenseList = expenseRepository.getAllExpenses();
-        logger.info("list" + expenseList.toString());
         return sortByType(expenseList, request);
     }
 
@@ -175,8 +178,34 @@ public class ExpenseService {
         return totalAmount;
     }
 
-    //TODO expensify 에서 어캐 하는지 확인 이것도 있고
     //getExpneseList based on month, year, week
+    //TODO db query getMonthlyExpenses로 load하는 방법도 해봐야함.
+    public List<Expense> getMonthlyExpenses(int month) {
+        LocalDate [] daysOfMonth = getFirstAndLastOfMonth(month);
+        ExpenseSortRequest request = new ExpenseSortRequest("date", daysOfMonth[0], daysOfMonth[1]);
+
+        return getSortedExpense(request);
+    }
+
+    public List<Expense> getSortTypeExpenses(ExpenseSortRequest request) {
+        logger.info("month? " + request.getMonth());
+        LocalDate [] daysOfMonth = getFirstAndLastOfMonth(request.getMonth());
+        request.setFrom(daysOfMonth[0]);
+        request.setTo(daysOfMonth[1]);
+
+        return getSortedExpense(request);
+    }
+
+    private LocalDate[] getFirstAndLastOfMonth(int month) {
+        LocalDate [] daysOfMonth = new LocalDate [2];
+        YearMonth yearMonth = YearMonth.of( 2021, month+1 );
+        daysOfMonth[0] = yearMonth.atDay( 1 );
+        daysOfMonth[1] = yearMonth.atEndOfMonth();
+
+        return daysOfMonth;
+    }
+
+
 //
 //    public Long getTotalAmountPerWeek(User user, LocalDate date) {
 //        return 34343L;
@@ -200,8 +229,11 @@ public class ExpenseService {
 
     //TODO reverse the order
     public List<Expense> getUpToDateExpense() {
+
         LocalDate to = LocalDate.now();
         LocalDate from = to.withDayOfMonth(1);
+        logger.info("to" + to);
+        logger.info("from" + from);
         ExpenseSortRequest request = new ExpenseSortRequest("date", from, to);
         return getSortedExpense(request);
     }
@@ -256,6 +288,7 @@ public class ExpenseService {
 //        logger.info(String.valueOf(piChart.get(ExpenseCategory.CAR).getPercent()));
         return piChart;
     }
+
 
     public static class DataSet {
         private Long amount;

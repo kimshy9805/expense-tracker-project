@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styled from "styled-components";
 import BackGroundImg from "../../assets/pictures/company_team.jpg";
 
@@ -32,7 +33,6 @@ export const SecondNavbar = styled.div`
   width: 100%;
   min-height: 100px;
   padding: 0 53px;
-  overflow-y: hidden;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -44,10 +44,21 @@ export const AccountWrapper = styled.div`
   flex-direction: column;
 `;
 
+export const MonthWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
+
+export const Icon = styled(FontAwesomeIcon)`
+  
+`;
+
 export const SecondNavbarText = styled.h1`
+  /* ${({ small }) => (small ? "5px 8px" : "7px 15px")}; */
   color: #fff;
   margin: 0;
-  font-size: 25px;
+  font-size: ${({ small }) => (small ? "13px" : "25px")};
+  /* font-size: 25px; */
   font-weight: regular;
   line-height: 1.5;
 `;

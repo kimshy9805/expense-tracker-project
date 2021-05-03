@@ -1,7 +1,6 @@
 import { AccountBox } from "components/accountBox";
 import React, { Component } from "react";
 import styled from "styled-components";
-import { LoginSection } from "./loginSection";
 
 const PageContainer = styled.div`
   width: 100%;

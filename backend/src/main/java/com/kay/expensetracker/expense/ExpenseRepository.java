@@ -26,6 +26,12 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
     )
     List<Expense> getExpensesPerDay(@Param("date") LocalDate date);
 
+    @Query(
+            value = "SELECT * FROM expenses e WHERE date BETWEEN e.date = :start AND e.date = :end",
+            nativeQuery = true
+    )
+    List<Expense> getMonthlyExpenses(@Param("start") LocalDate start, @Param("end") LocalDate end);
+
     //todo exception handle 해줘야함.
     @Query(
             value = "SELECT * FROM expenses e WHERE e.expense_id = :expense_id",

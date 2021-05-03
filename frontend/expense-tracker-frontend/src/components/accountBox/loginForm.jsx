@@ -16,12 +16,8 @@ import {
 import * as yup from "yup";
 import Axios from "http-common";
 import { useHistory } from "react-router-dom";
-import store from "store";
-import { createSelector } from "reselect";
-import { makeSelectTokens } from "services/selectors";
 import { useSelector, useDispatch } from "react-redux";
-import { setToken } from "services/actions";
-import setAuthorizationToken from "services/axiosInstace";
+import { setToken, setAccount } from "services/actions";
 
 const validationSchema = yup.object({
   email: yup.string().required(),
@@ -30,17 +26,17 @@ const validationSchema = yup.object({
 
 const actionDispatcher = (dispatch) => ({
   setToken: (token) => dispatch(setToken(token)),
+  setAccount: (account) => dispatch(setAccount(account)),
 });
 
 export const LoginForm = (props) => {
   let history = useHistory();
   const { switchToSignup } = useContext(AccountContext);
   const [error, setError] = useState(null);
-  const { setToken } = actionDispatcher(useDispatch());
+  const { setToken, setAccount } = actionDispatcher(useDispatch());
 
   const onSubmit = async (values) => {
     setError(null);
-    console.log(values);
     const response = await Axios.post("auth/login", values).catch((err) => {
       if (err && err.response) setError(err.response.data.message);
     });
@@ -49,8 +45,12 @@ export const LoginForm = (props) => {
     if (response) {
       alert("Welcome back in. Authenticating...");
       let token = response.data.jwt;
+      let account = values;
       console.log("token from server ", token);
+      console.log("account  from server ", account);
+      setAccount(account);
       setToken(token);
+
       history.push("/home");
       // window.location.reload();
     }

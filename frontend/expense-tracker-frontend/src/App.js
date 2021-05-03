@@ -9,7 +9,6 @@ import {
   Redirect, //지정장소로 가세요
 } from "react-router-dom";
 import { LoginPage } from "containers/loginpage";
-import { RegistrationPage } from "containers/registrationpage";
 import { HomePage } from "containers/HomePage";
 
 function App() {
@@ -17,12 +16,7 @@ function App() {
     <Router>
       <Switch>
         <Route exact path="/" component={FrontPage}></Route>
-        <Route
-          exact
-          path="/login"
-          component={LoginPage}
-        ></Route>
-        {/* <Route exact path="/registration" component={RegistrationPage}></Route> */}
+        <Route exact path="/login" component={LoginPage}></Route>
         <Route exact path="/home" component={HomePage}></Route>
         <Route>404 not found page</Route>
       </Switch>
