@@ -86,10 +86,8 @@ public class ExpenseController {
     //TODO 방법찾아서 getmapping으로
     //TODO axios -> request에서 month returns null. 해결해야함.
     @PostMapping(path = "/filter")
-    public void getSortedExpense(@RequestBody ExpenseSortRequest request) {
-        logger.info("aa" + request.getType());
-        logger.info("bb" + request.getMonth());
-//        return expenseService.getSortTypeExpenses(request);
+    public List<Expense> getSortedExpense(@RequestBody ExpenseSortRequest request) {
+        return expenseService.getSortTypeExpenses(request);
     }
 
     /*

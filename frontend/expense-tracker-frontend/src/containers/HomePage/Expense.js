@@ -1,5 +1,7 @@
+import { UpdateForm } from "components/addExpenseForm/updateForm";
 import { Button } from "components/button";
-import React, { Component } from "react";
+import { Marginer } from "components/marginer";
+import React, { Component, useState } from "react";
 import {
   AmountWrapper,
   CategoryWrapper,
@@ -9,6 +11,7 @@ import {
   ExpenseWrapper,
   MerchantWrapper,
   TextWrapper,
+  ButtonWrapper,
 } from "./styled";
 
 export const Expense = (props) => {
@@ -23,7 +26,22 @@ export const Expense = (props) => {
     category,
     description,
     onDelete,
+    onUpdate,
   } = props;
+  const [isPopup, setIsPopup] = useState(false);
+  const expense = {
+    id: id,
+    date: date,
+    merchant: merchant,
+    amount: amount,
+    exchangeType: exchangeType,
+    category: category,
+    description: description,
+  };
+  const toggleIsPopup = () => {
+    console.log("popup change!");
+    setIsPopup(!isPopup);
+  };
   return (
     <ExpenseWrapper>
       <DateWrapper>
@@ -42,9 +60,30 @@ export const Expense = (props) => {
       <DescriptionWrapper>
         <TextWrapper>{description}</TextWrapper>
       </DescriptionWrapper>
-      <Button small onClick={() => onDelete(id)}>
-        remove
-      </Button>
+      <ButtonWrapper>
+        <Button small onClick={() => onDelete(id)}>
+          remove
+        </Button>
+        <Marginer direction="vertical" margin="5px" />
+        <Button
+          small
+          onClick={() => {
+            onUpdate(expense);
+            toggleIsPopup();
+          }}
+        >
+          update
+        </Button>
+      </ButtonWrapper>
+      {isPopup && (
+        <UpdateForm
+          expense={expense}
+          onUpdate={expense}
+          handleClose={toggleIsPopup}
+        />
+      )}
     </ExpenseWrapper>
   );
 };
+
+//OnClick 시 addForm만들기

@@ -13,7 +13,6 @@ import java.time.LocalDate;
 @ToString
 public class ExpenseSortRequest {
     private String type;
-    @JsonIgnore
     private Integer month;
     @JsonIgnore
     private LocalDate from;

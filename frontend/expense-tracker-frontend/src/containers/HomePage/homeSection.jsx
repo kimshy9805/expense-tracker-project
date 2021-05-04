@@ -41,6 +41,8 @@ export function HomeSection(props) {
   const [expenses, setExpenses] = useState([]);
   const [month, setMonth] = useState(monthNames[monthNumber]);
   const [isPopup, setIsPopup] = useState(false);
+  const [count, setCount] = useState(0);
+
   let tokenBearer = { Authorization: `Bearer ${token}` };
   //get
   const getExpense = async (type) => {
@@ -67,12 +69,37 @@ export function HomeSection(props) {
     }
   };
 
-  //sortType + month를 받아서 처리해야함.
   const getSortExpense = async (sortType) => {
     let request = { type: sortType, month: monthNumber };
     console.log(request);
     switch (sortType) {
       case "merchant":
+        {
+          const response = await Axios.post("expenses/filter", request, {
+            headers: tokenBearer,
+          }).catch((err) => {
+            console.log(err);
+          });
+          if (response) {
+            console.log(response);
+            setExpenses(response.data);
+          }
+        }
+        break;
+      case "date":
+        {
+          const response = await Axios.post("expenses/filter", request, {
+            headers: tokenBearer,
+          }).catch((err) => {
+            console.log(err);
+          });
+          if (response) {
+            console.log(response);
+            setExpenses(response.data);
+          }
+        }
+        break;
+      case "amount": {
         const response = await Axios.post("expenses/filter", request, {
           headers: tokenBearer,
         }).catch((err) => {
@@ -82,25 +109,12 @@ export function HomeSection(props) {
           console.log(response);
           setExpenses(response.data);
         }
-        break;
+      }
       default:
+        {
+        }
         break;
     }
-
-    // const response = await Axios.get("expenses/filter", {
-    //   ExpenseSortRequest,
-    //   // params: {
-    //   //   ExpenseSortRequest: { type: "merchant" },
-    //   // },
-    //   headers: tokenBearer,
-    // }).catch((err) => {
-    //   console.log(err);
-    // });
-
-    // console.log(response);
-    // if (response) {
-    //   setExpenses(response.data);
-    // }
   };
 
   //post
@@ -127,6 +141,13 @@ export function HomeSection(props) {
     }
   };
 
+  //need entire expense not id.
+  //Update
+  const updateExpense = async (expense) => {
+    console.log("update!");
+    console.log(expense);
+  };
+
   // useEffect(() => {
   //   getExpense();
   // }, []);
@@ -138,6 +159,14 @@ export function HomeSection(props) {
   useEffect(() => {
     getMonthlyExpense();
   }, [monthNumber]);
+
+  // useEffect(() => {
+  //   getMonthlyExpense();
+  // }, [expenses]);
+
+  useEffect(() => {
+    getMonthlyExpense();
+  }, [expenses.length]);
 
   const toggleIsPopup = () => {
     console.log("popup change!");
@@ -158,14 +187,7 @@ export function HomeSection(props) {
         monthNumber += 1;
       }
     }
-    // const response = Axios.get(`/expenses/month/${monthNumber}`, {
-    //   headers: tokenBearer,
-    // })
-    //   .then((response) => console.log(response.data))
-    //   .catch((err) => console.log(err));
-
     setMonth(monthNames[monthNumber]);
-    // setExpenses(response.data);
   };
 
   const isEmptyUser = !expenses || (expenses && expenses.length === 0);
@@ -210,8 +232,15 @@ export function HomeSection(props) {
         </Style.FilterViewContainer>
         <Marginer direction="vertical" margin="1em" />
         <Style.ExpenseDetailContainer>
-          <Button small>Date</Button>
-          <Marginer direction="horizontal" margin="5em" />
+          <Button
+            small
+            onClick={() => {
+              getSortExpense("date");
+            }}
+          >
+            Date
+          </Button>
+          <Marginer direction="horizontal" margin="6em" />
           <Button
             small
             onClick={() => {
@@ -220,11 +249,18 @@ export function HomeSection(props) {
           >
             Merchant
           </Button>
-          <Marginer direction="horizontal" margin="20em" />
-          <Button small>Amount</Button>
-          <Marginer direction="horizontal" margin="5em" />
+          <Marginer direction="horizontal" margin="18em" />
+          <Button
+            small
+            onClick={() => {
+              getSortExpense("amount");
+            }}
+          >
+            Amount
+          </Button>
+          <Marginer direction="horizontal" margin="3.5em" />
           <Button small>Category</Button>
-          <Marginer direction="horizontal" margin="5em" />
+          <Marginer direction="horizontal" margin="4em" />
           <Button small>Description</Button>
         </Style.ExpenseDetailContainer>
         <Marginer direction="vertical" margin="2em" />
@@ -232,12 +268,10 @@ export function HomeSection(props) {
           <Style.ExpenseContainer>
             {expenses.map((expense) => (
               <Expense
-                onClick={() => {
-                  console.log("click!");
-                }}
                 key={expense.id}
                 {...expense}
                 onDelete={deleteExpense}
+                onUpdate={updateExpense}
               />
             ))}
           </Style.ExpenseContainer>
@@ -248,3 +282,18 @@ export function HomeSection(props) {
     </Style.HomePageContainer>
   );
 }
+
+// const response = await Axios.get("expenses/filter", {
+//   ExpenseSortRequest,
+//   // params: {
+//   //   ExpenseSortRequest: { type: "merchant" },
+//   // },
+//   headers: tokenBearer,
+// }).catch((err) => {
+//   console.log(err);
+// });
+
+// console.log(response);
+// if (response) {
+//   setExpenses(response.data);
+// }

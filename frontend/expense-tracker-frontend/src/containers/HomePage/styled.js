@@ -49,9 +49,7 @@ export const MonthWrapper = styled.div`
   flex-direction: row;
 `;
 
-export const Icon = styled(FontAwesomeIcon)`
-  
-`;
+export const Icon = styled(FontAwesomeIcon)``;
 
 export const SecondNavbarText = styled.h1`
   /* ${({ small }) => (small ? "5px 8px" : "7px 15px")}; */
@@ -171,4 +169,11 @@ export const TextWrapper = styled.h3`
   font-size: 15px;
   font-weight: regular;
   line-height: 1.5;
+`;
+
+//Button text
+export const ButtonWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
 `;

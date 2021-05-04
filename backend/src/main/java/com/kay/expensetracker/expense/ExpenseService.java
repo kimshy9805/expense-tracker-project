@@ -143,16 +143,20 @@ public class ExpenseService {
 
     private List<Expense> sortByType(List<Expense> expenseList, ExpenseSortRequest request) {
         switch (request.getType()) {
-            case ("category"):
-                expenseList.sort(Comparator.comparing(Expense::getCategory));
-                break;
             case ("merchant"):
-                expenseList.sort(Comparator.comparing(Expense::getMerchant));
-                break;
+                return expenseList.stream()
+                        .filter(e -> !e.getDate().isAfter(request.getTo()) && !e.getDate().isBefore(request.getFrom()))
+                        .sorted(Comparator.comparing(Expense::getMerchant))
+                        .collect(Collectors.toList());
             case ("date"):
                 return expenseList.stream()
                         .filter(e -> !e.getDate().isAfter(request.getTo()) && !e.getDate().isBefore(request.getFrom()))
                         .sorted(Comparator.comparing(Expense::getDate))
+                        .collect(Collectors.toList());
+            case("amount"):
+                return expenseList.stream()
+                        .filter(e -> !e.getDate().isAfter(request.getTo()) && !e.getDate().isBefore(request.getFrom()))
+                        .sorted(Comparator.comparing(Expense::getAmount))
                         .collect(Collectors.toList());
             default:
                 break;
@@ -188,7 +192,6 @@ public class ExpenseService {
     }
 
     public List<Expense> getSortTypeExpenses(ExpenseSortRequest request) {
-        logger.info("month? " + request.getMonth());
         LocalDate [] daysOfMonth = getFirstAndLastOfMonth(request.getMonth());
         request.setFrom(daysOfMonth[0]);
         request.setTo(daysOfMonth[1]);
