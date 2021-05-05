@@ -1,5 +1,5 @@
 import { createStore, combineReducers } from "redux";
-import tokenReducer from "./services/reducers";
+import tokenReducer from "./reducers";
 
 //3. after simple reducers
 const reducers = combineReducers({

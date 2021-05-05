@@ -48,7 +48,7 @@ export function Navbar(props) {
       <BrandContainer>
         <Logo inline />
       </BrandContainer>
-      {page === "homePage" && (
+      {(page === "homePage" || page === "piChartPage") && (
         <AccessibilityContainer>
           <Marginer direction="horizontal" margin="8px" />
           <Link

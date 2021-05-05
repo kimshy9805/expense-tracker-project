@@ -7,12 +7,12 @@ import { Navbar } from "components/navbar";
 import { Marginer } from "components/marginer";
 import { Button } from "components/button";
 import { Expense } from "./Expense";
-import { AddForm } from "components/addExpenseForm";
+import { AddForm } from "components/expenseForm";
 import { faHome } from "@fortawesome/free-solid-svg-icons";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axiosInstance from "services/axiosInstace";
-import Axios from "../../http-common";
+import Axios from "../../services/http-common";
 
 const stateSelector = createSelector(
   [makeSelectAccounts, makeSelectTokens],
@@ -146,11 +146,18 @@ export function HomeSection(props) {
   const updateExpense = async (expense) => {
     console.log("update!");
     console.log(expense);
-  };
 
-  // useEffect(() => {
-  //   getExpense();
-  // }, []);
+    const response = await Axios.put(`/expenses/${expense.id}`, expense, {
+      headers: tokenBearer,
+    }).catch((err) => {
+      console.log(err);
+    });
+
+    if (response) {
+      console.log(response);
+      getMonthlyExpense();
+    }
+  };
 
   //useEffect takes two parameters 1. callback, 2. dependency array
   //dependency array = [] 라면 lifecycle마지막단계에서 한번만 부르고 끝
@@ -159,10 +166,6 @@ export function HomeSection(props) {
   useEffect(() => {
     getMonthlyExpense();
   }, [monthNumber]);
-
-  // useEffect(() => {
-  //   getMonthlyExpense();
-  // }, [expenses]);
 
   useEffect(() => {
     getMonthlyExpense();

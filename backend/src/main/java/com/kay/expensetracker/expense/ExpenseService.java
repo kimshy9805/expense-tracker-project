@@ -74,14 +74,17 @@ public class ExpenseService {
 
     public void updateExpenseById(Long id, ExpenseRequest request) {
         Expense toBeUpdatedExpense = expenseRepository.findById(id).get();
-
+        logger.info("hi? " + toBeUpdatedExpense.getMerchant());
         //cannot change amount if conversion is required.
-        if (request.getIsConversionRequired()) {
-            logger.info("hi I am here -------");
-            updateExchangeType(toBeUpdatedExpense, request);
-        }
-
+//        if (request.getIsConversionRequired()) {
+//            logger.info("hi I am here -------");
+//            //TODO check if prev amount and curr amount been changed
+//            //TODO if so, send error back.
+//            updateExchangeType(toBeUpdatedExpense, request);
+//        }
+        logger.info("prev " + toBeUpdatedExpense.getMerchant());
         updateAttributes(toBeUpdatedExpense, request);
+        logger.info("curr " + toBeUpdatedExpense.getMerchant());
 
         expenseRepository.updateExpenseById(Math.toIntExact(id),
                 toBeUpdatedExpense.getAmount(),
@@ -106,11 +109,11 @@ public class ExpenseService {
                     toBeUpdatedExpense.setDate(request.getDate());
                     break;
                 case "amount":
-                    if (!request.getIsConversionRequired())
+//                    if (!request.getIsConversionRequired())
                         toBeUpdatedExpense.setAmount(request.getAmount());
                     break;
                 case "exchangeType":
-                    if (!request.getIsConversionRequired())
+//                    if (!request.getIsConversionRequired())
                         toBeUpdatedExpense.setExchangeType(request.getExchangeType());
                     break;
                 case "description":
@@ -244,24 +247,16 @@ public class ExpenseService {
     /*
         Pi-Chart calculation
      */
-
-    public HashMap<ExpenseCategory, DataSet> getPiChart(LocalDate date) {
+    public HashMap<ExpenseCategory, DataSet> getPiChart(int month) {
         HashMap<ExpenseCategory, DataSet> piChart = new HashMap<>();
-        logger.info("today" + date);
-        Month month = date.getMonth();
-        LocalDate from;
-        LocalDate to;
+        LocalDate [] daysOfMonth = getFirstAndLastOfMonth(month);
+        LocalDate from = daysOfMonth[0];
+        LocalDate to = daysOfMonth[1];
         Long totalAmount = 0L;
 
-        if (month == LocalDate.now().getMonth()) {
-            from = date.withDayOfMonth(1);
-            to = date.withDayOfMonth(date.lengthOfMonth());
-        } else {
-            from = date.withDayOfMonth(1);
-            to = date;
-        }
-
         logger.info("date " + from + " and " + to);
+
+        //TODO 여기서부터 logic handle하면 될듯. DataSet을 바꾸면될듯. 
 
         List<Expense> expenseList = expenseRepository.getAllExpenses();
         ExpenseSortRequest request = new ExpenseSortRequest("date", from, to);
@@ -291,6 +286,53 @@ public class ExpenseService {
 //        logger.info(String.valueOf(piChart.get(ExpenseCategory.CAR).getPercent()));
         return piChart;
     }
+
+//    public HashMap<ExpenseCategory, DataSet> getPiChart(LocalDate date) {
+//        HashMap<ExpenseCategory, DataSet> piChart = new HashMap<>();
+//        logger.info("today" + date);
+//        Month month = date.getMonth();
+//        LocalDate from;
+//        LocalDate to;
+//        Long totalAmount = 0L;
+//
+//        if (month == LocalDate.now().getMonth()) {
+//            from = date.withDayOfMonth(1);
+//            to = date.withDayOfMonth(date.lengthOfMonth());
+//        } else {
+//            from = date.withDayOfMonth(1);
+//            to = date;
+//        }
+//
+//        logger.info("date " + from + " and " + to);
+//
+//        List<Expense> expenseList = expenseRepository.getAllExpenses();
+//        ExpenseSortRequest request = new ExpenseSortRequest("date", from, to);
+//        List<Expense> sortedExpenseList = sortByType(expenseList, request);
+//
+//        for (Expense expense : sortedExpenseList) {
+//            if (!piChart.containsKey(expense.getCategory())) {
+//                DataSet data = new DataSet(expense.getAmount());
+//                piChart.put(expense.getCategory(), data);
+//                piChart.get(expense.getCategory()).setAmount(expense.getAmount());
+//            } else {
+//                Long amount = piChart.getOrDefault(expense.getCategory(), new DataSet((0L))).getAmount() + expense.getAmount();
+//                piChart.getOrDefault(expense.getCategory(), new DataSet((0L))).setAmount(amount);
+//            }
+//            logger.info("piChart: " + expense.getCategory() + " inside " + piChart.get(expense.getCategory()).getAmount());
+//            totalAmount += expense.getAmount();
+//        }
+//
+//        Long finalTotalAmount = totalAmount;
+//        DecimalFormat decimalFormat = new DecimalFormat("0.00");
+//        piChart.forEach((key, value) -> {
+//            double percentage = (double) value.getAmount() / (double) finalTotalAmount;
+//            logger.info(decimalFormat.format(percentage));
+//            value.setPercent(Double.parseDouble(decimalFormat.format(percentage)));
+//        });
+//
+////        logger.info(String.valueOf(piChart.get(ExpenseCategory.CAR).getPercent()));
+//        return piChart;
+//    }
 
 
     public static class DataSet {

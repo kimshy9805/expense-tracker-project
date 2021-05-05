@@ -8,8 +8,9 @@ import {
   Link, //hyper link 개념으로 뭐 클릭하면 글로 re route시키게
   Redirect, //지정장소로 가세요
 } from "react-router-dom";
-import { LoginPage } from "containers/loginpage";
+import { LoginPage } from "containers/LoginPage";
 import { HomePage } from "containers/HomePage";
+import { PiChartPage } from "containers/PiChartPage";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route exact path="/" component={FrontPage}></Route>
         <Route exact path="/login" component={LoginPage}></Route>
         <Route exact path="/home" component={HomePage}></Route>
+        <Route exact path="/pichart" component={PiChartPage}></Route>
         <Route>404 not found page</Route>
       </Switch>
     </Router>

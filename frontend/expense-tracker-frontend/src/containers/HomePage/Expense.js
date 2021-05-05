@@ -1,4 +1,4 @@
-import { UpdateForm } from "components/addExpenseForm/updateForm";
+import { UpdateForm } from "components/expenseForm/updateForm";
 import { Button } from "components/button";
 import { Marginer } from "components/marginer";
 import React, { Component, useState } from "react";
@@ -42,6 +42,11 @@ export const Expense = (props) => {
     console.log("popup change!");
     setIsPopup(!isPopup);
   };
+
+  const onUpdateTemp = (expense) => {
+    console.log(expense);
+  };
+
   return (
     <ExpenseWrapper>
       <DateWrapper>
@@ -68,7 +73,6 @@ export const Expense = (props) => {
         <Button
           small
           onClick={() => {
-            onUpdate(expense);
             toggleIsPopup();
           }}
         >
@@ -78,7 +82,8 @@ export const Expense = (props) => {
       {isPopup && (
         <UpdateForm
           expense={expense}
-          onUpdate={expense}
+          // onUpdate={onUpdateTemp}
+          onUpdate={onUpdate}
           handleClose={toggleIsPopup}
         />
       )}
@@ -87,3 +92,5 @@ export const Expense = (props) => {
 };
 
 //OnClick 시 addForm만들기
+//function을 그대로 child component한데 pass 가능하다. 
+//onUpdate처럼. 

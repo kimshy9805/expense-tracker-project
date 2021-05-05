@@ -17,5 +17,6 @@ public class ExpenseRequest {
     private final ExpenseCurrency exchangeType;
     private final ExpenseCategory category;
     private final String description;
+    @JsonIgnore
     private Boolean isConversionRequired = false;
 }

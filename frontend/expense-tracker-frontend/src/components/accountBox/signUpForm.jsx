@@ -15,7 +15,7 @@ import {
   SubmitButton,
 } from "./common";
 import * as yup from "yup";
-import Axios from "../../http-common";
+import Axios from "../../services/http-common";
 
 // const PASSWORD_REGEX = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
 

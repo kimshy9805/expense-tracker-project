@@ -29,7 +29,6 @@ export const UpdateForm = (props) => {
 
   //Todo onUpdate 만해결하면 될듯?
   const onSubmit = async (values) => {
-    console.log(values);
     onUpdate(values);
   };
 

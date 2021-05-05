@@ -66,10 +66,16 @@ public class ExpenseController {
         return expenseService.getSelectedAmount(selectedExpense);
     }
 
-    @GetMapping(path = "/pi")
-    public HashMap<ExpenseCategory, DataSet> getPiChart(@RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-        return expenseService.getPiChart(date);
+    //TODO 한달기준 dateset을 받아야함.
+    //TODO hashmap말고 object를 줘야할듯? enum + value.
+    @GetMapping(path = "/pi/{month}")
+    public HashMap<ExpenseCategory, DataSet> getPiChart(@PathVariable int month) {
+        return expenseService.getPiChart(month);
     }
+//    @GetMapping(path = "/pi/{month}")
+//    public HashMap<ExpenseCategory, DataSet> getPiChart(@RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+//        return expenseService.getPiChart(date);
+//    }
 
     /*
         HTTP POST Method
@@ -107,6 +113,7 @@ public class ExpenseController {
     //isConversionRequired true라면 다르게 handle.
     @PutMapping(path = "/{id}")
     public String updateExpense(@PathVariable Long id, @RequestBody ExpenseRequest request) {
+        logger.info("success?! " + request + id);
         expenseService.updateExpenseById(id, request);
         return "success";
     }
