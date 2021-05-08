@@ -262,6 +262,9 @@ public class ExpenseService {
         ExpenseSortRequest request = new ExpenseSortRequest("date", from, to);
         List<Expense> sortedExpenseList = sortByType(expenseList, request);
 
+        logger.info("ang---------------------------------------------------------");
+        logger.info("what is sorted? : " + sortedExpenseList.toString());
+
         for (Expense expense : sortedExpenseList) {
             if (!piChart.containsKey(expense.getCategory())) {
                 DataSet data = new DataSet(expense.getAmount());
@@ -277,13 +280,14 @@ public class ExpenseService {
 
         Long finalTotalAmount = totalAmount;
         DecimalFormat decimalFormat = new DecimalFormat("0.00");
-        piChart.forEach((key, value) -> {
-            double percentage = (double) value.getAmount() / (double) finalTotalAmount;
-            logger.info(decimalFormat.format(percentage));
-            value.setPercent(Double.parseDouble(decimalFormat.format(percentage)));
-        });
+//        piChart.forEach((key, value) -> {
+//            double percentage = (double) value.getAmount() / (double) finalTotalAmount;
+//            logger.info("what is perc?: " + percentage);
+//            logger.info(decimalFormat.format(percentage));
+////            value.setPercent(Double.parseDouble(decimalFormat.format(percentage)));
+//            value.setPercent(percentage);
+//        });
 
-//        logger.info(String.valueOf(piChart.get(ExpenseCategory.CAR).getPercent()));
         return piChart;
     }
 
@@ -337,7 +341,7 @@ public class ExpenseService {
 
     public static class DataSet {
         private Long amount;
-        private double percent;
+//        private double percent;
 
         public DataSet(Long amount) {
             this.amount = amount;
@@ -351,12 +355,12 @@ public class ExpenseService {
             this.amount = amount;
         }
 
-        public double getPercent() {
-            return percent;
-        }
-
-        public void setPercent(double percent) {
-            this.percent = percent;
-        }
+//        public double getPercent() {
+//            return percent;
+//        }
+//
+//        public void setPercent(double percent) {
+//            this.percent = percent;
+//        }
     }
 }

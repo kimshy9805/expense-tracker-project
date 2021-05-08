@@ -8,10 +8,8 @@ import { Marginer } from "components/marginer";
 import { Button } from "components/button";
 import { Expense } from "./Expense";
 import { AddForm } from "components/expenseForm";
-import { faHome } from "@fortawesome/free-solid-svg-icons";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import axiosInstance from "services/axiosInstace";
 import Axios from "../../services/http-common";
 
 const stateSelector = createSelector(
