@@ -10,13 +10,20 @@ import { createSelector } from "reselect";
 import { makeSelectAccounts, makeSelectTokens } from "services/selectors";
 import { useSelector } from "react-redux";
 import {
+    ButtonContainer,
     PiChartContainer,
     SectionContainer,
     SummaryContainer,
+    TableContainer,
+    TableHeaderContainer,
     TextWrapper,
+    TitleContainer,
 } from "./styled";
 import { Line } from "components/line";
 import { Marginer } from "components/marginer";
+import { number } from "yup/lib/locale";
+import { Link } from "react-router-dom";
+import { Button } from "components/button";
 
 const stateSelector = createSelector(
     [makeSelectAccounts, makeSelectTokens],
@@ -27,34 +34,50 @@ export const PiChartSection = (props) => {
     const token = useSelector(stateSelector);
     const [categoryData, setCategoryData] = useState([]);
     const [categoryType, setCategoryType] = useState([]);
+    const [categoryAmount, setCategoryAmount] = useState([]);
+    const category = {
+        categories: [
+            { id: 1, category: "FEES", amount: 700, numberOfExpenses: 4 },
+            { id: 2, category: "FEES", amount: 500, numberOfExpenses: 4 },
+            {
+                id: 3,
+                category: "Advertising",
+                amount: 200,
+                numberOfExpenses: 4,
+            },
+            { id: 4, category: "Cars", amount: 1000, numberOfExpenses: 4 },
+        ],
+    };
     let tokenBearer = {
         Authorization:
-            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJraW1zaHk1ODQwQG5hdmVyLmNvbSIsImV4cCI6MTYyMDUxNTQ2NCwiaWF0IjoxNjIwNDc5NDY0fQ.0f0X7JnvCPW4Dl2CaKUEMW4LLr88n2J0K0GO2fVddcU",
+            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJraW1zaHk1ODQwQG5hdmVyLmNvbSIsImV4cCI6MTYyMDY4NjA5NCwiaWF0IjoxNjIwNjUwMDk0fQ.02yHwmXB2QVFLTps-SqoUwC5oT0KMgGHMuUpTsrPB24",
     };
     const month = new Date().getMonth();
 
     const getPiData = async (month) => {
-        console.log(tokenBearer);
         const response = await Axios.get(`/expenses/pi/${month}`, {
             headers: tokenBearer,
         }).catch((err) => {
             console.log(err);
         });
-
         if (response) {
             let data = [];
+            let totalAmount = [];
             Object.values(response.data).map((ins) => {
-                data = [...data, ins.amount];
+                const { amount, numberOfExpenses } = ins;
+                data = [...data, ins];
+                totalAmount = [...totalAmount, amount];
             });
             setCategoryType(Object.keys(response.data));
             setCategoryData(data);
-            console.log(isEmptyCategory);
+            setCategoryAmount(totalAmount);
         }
     };
 
     useEffect(() => {
         getPiData(month);
     }, []);
+
     const state = {
         labels: [...categoryType],
         datasets: [
@@ -100,19 +123,57 @@ export const PiChartSection = (props) => {
                     "#4B5000",
                     "#175000",
                 ],
-                data: [...categoryData],
+                data: categoryAmount,
             },
         ],
     };
     const isEmptyCategory =
         !categoryType || (categoryType && categoryType.length === 0);
 
+    const renderTableHeader = () => {
+        let header = Object.keys(category.categories[0]);
+        return header.map((key, index) => {
+            return <th key={index}>{key.toUpperCase}</th>;
+        });
+    };
+
+    const renderTableData = () => {
+        return categoryData.map((data, index) => {
+            const { category, amount, numberOfExpenses } = data;
+            return (
+                <tr key={index}>
+                    <td>
+                        <TextWrapper small>{index}</TextWrapper>
+                    </td>
+                    <td>
+                        <TextWrapper small>{category}</TextWrapper>
+                    </td>
+                    <td>
+                        <TextWrapper small>{amount}</TextWrapper>
+                    </td>
+                    <td>
+                        <TextWrapper small>{numberOfExpenses}</TextWrapper>
+                    </td>
+                </tr>
+            );
+        });
+    };
+
     return (
         <FrontSectionContainer>
             <BackGroundFilter>
                 <Navbar page="piChartPage" />
-                <Marginer direction="vertical" margin="4em" />
+                <Marginer direction="vertical" margin="2em" />
                 <TextWrapper>Pi Chart Analysis</TextWrapper>
+                <ButtonContainer>
+                    <Link
+                        to={{
+                            pathname: "/home",
+                        }}
+                    >
+                        <Button>Summary</Button>
+                    </Link>
+                </ButtonContainer>
                 <SectionContainer>
                     <PiChartContainer>
                         <Pie
@@ -134,47 +195,36 @@ export const PiChartSection = (props) => {
                             }}
                         />
                     </PiChartContainer>
-                    <h1>hihihihihihi</h1>
-
                     <SummaryContainer>
-                        <table>
-                            <thead>
+                        <TableContainer>
+                            {/* <thead> */}
+                            <TableHeaderContainer>
                                 <tr>
-                                    <th>
+                                    <th align="left">
+                                        <TextWrapper small>ID</TextWrapper>
+                                    </th>
+                                    <th align="left">
                                         <TextWrapper small>
                                             Category
                                         </TextWrapper>
                                     </th>
-                                    <th>
+                                    <th align="left">
                                         <TextWrapper small>TOTAL</TextWrapper>
                                     </th>
-                                    <th>
+                                    <th align="left">
                                         <TextWrapper small>
                                             # OF EXPENSES
                                         </TextWrapper>
                                     </th>
                                 </tr>
-                            </thead>
-                            <Line />
+                            </TableHeaderContainer>
+                            {/* </thead> */}
                             <tbody>
-                                {/* TODO find a way to populate data inside table  */}
-                                {!isEmptyCategory &&
-                                    categoryType.map((type) => {
-                                        return (
-                                            <tr>
-                                                <td>
-                                                    <TextWrapper small>
-                                                        {type}
-                                                    </TextWrapper>
-                                                </td>
-                                                <td>
-                                                    <h3>hi</h3>
-                                                </td>
-                                            </tr>
-                                        );
-                                    })}
+                                {/* <tr>{renderTableHeader()}</tr> */}
+                                <Marginer direction="vertical" margin="10px" />
+                                {renderTableData()}
                             </tbody>
-                        </table>
+                        </TableContainer>
                     </SummaryContainer>
                 </SectionContainer>
             </BackGroundFilter>

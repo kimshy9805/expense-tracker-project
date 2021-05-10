@@ -1,14 +1,9 @@
 import { createStore, combineReducers } from "redux";
-import tokenReducer from "./reducers";
+import { persistStore } from "redux-persist";
+import rootReducer from "./rootReducer";
 
-//3. after simple reducers
-const reducers = combineReducers({
-  token: tokenReducer,
-});
+export const store = createStore(rootReducer);
 
-const store = createStore(
-  reducers,
-  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
-);
+export const persistor = persistStore(store);
 
-export default store;
+export default { store, persistor };

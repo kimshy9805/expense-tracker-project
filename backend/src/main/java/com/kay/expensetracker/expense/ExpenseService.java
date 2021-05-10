@@ -256,7 +256,7 @@ public class ExpenseService {
 
         logger.info("date " + from + " and " + to);
 
-        //TODO 여기서부터 logic handle하면 될듯. DataSet을 바꾸면될듯. 
+        //TODO List<Category>으로 return해줘야함. 
 
         List<Expense> expenseList = expenseRepository.getAllExpenses();
         ExpenseSortRequest request = new ExpenseSortRequest("date", from, to);
@@ -267,12 +267,17 @@ public class ExpenseService {
 
         for (Expense expense : sortedExpenseList) {
             if (!piChart.containsKey(expense.getCategory())) {
-                DataSet data = new DataSet(expense.getAmount());
-                piChart.put(expense.getCategory(), data);
-                piChart.get(expense.getCategory()).setAmount(expense.getAmount());
+
+//                DataSet data = new DataSet(expense.getAmount());
+//                piChart.put(expense.getCategory(), data);
+//                piChart.get(expense.getCategory()).setAmount(expense.getAmount());
+                piChart.put(expense.getCategory(), new DataSet(expense.getCategory(), expense.getAmount()));
+                piChart.get(expense.getCategory()).setNumberOfExpenses(1);
             } else {
-                Long amount = piChart.getOrDefault(expense.getCategory(), new DataSet((0L))).getAmount() + expense.getAmount();
-                piChart.getOrDefault(expense.getCategory(), new DataSet((0L))).setAmount(amount);
+                Long amount = piChart.getOrDefault(expense.getCategory(), new DataSet(expense.getCategory(), 0L)).getAmount() + expense.getAmount();
+                Integer countExpense = piChart.getOrDefault(expense.getCategory(), new DataSet(expense.getCategory(), 0L)).getNumberOfExpenses() + 1;
+                piChart.getOrDefault(expense.getCategory(), new DataSet(expense.getCategory(), 0L)).setAmount(amount);
+                piChart.getOrDefault(expense.getCategory(), new DataSet(expense.getCategory(), 0L)).setNumberOfExpenses(countExpense);
             }
             logger.info("piChart: " + expense.getCategory() + " inside " + piChart.get(expense.getCategory()).getAmount());
             totalAmount += expense.getAmount();
@@ -340,11 +345,21 @@ public class ExpenseService {
 
 
     public static class DataSet {
+        private ExpenseCategory category;
         private Long amount;
-//        private double percent;
+        private Integer numberOfExpenses;
 
-        public DataSet(Long amount) {
+        public DataSet(ExpenseCategory category, Long amount) {
+            this.category = category;
             this.amount = amount;
+        }
+
+        public ExpenseCategory getCategory() {
+            return category;
+        }
+
+        public void setCategory(ExpenseCategory category) {
+            this.category = category;
         }
 
         public Long getAmount() {
@@ -355,12 +370,12 @@ public class ExpenseService {
             this.amount = amount;
         }
 
-//        public double getPercent() {
-//            return percent;
-//        }
-//
-//        public void setPercent(double percent) {
-//            this.percent = percent;
-//        }
+        public Integer getNumberOfExpenses() {
+            return numberOfExpenses;
+        }
+
+        public void setNumberOfExpenses(Integer numberOfExpenses) {
+            this.numberOfExpenses = numberOfExpenses;
+        }
     }
 }
